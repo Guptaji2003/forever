@@ -8,8 +8,8 @@ require("dotenv").config();
 app.use(cors({ origin: "http://localhost:5173", credentials: true }));
 app.use(express.json());
 app.use(cookieParser());
-app.use(require("./Routes/userroute.js"));
-app.use(require("./Routes/productroute.js"));
+app.use("/api/users",require("./Routes/userroute.js"));
+app.use("/api/products",require("./Routes/productroute.js"));
 app.use(require("./Routes/orderroute.js"));
 
 app.listen(process.env.PORT, () => {

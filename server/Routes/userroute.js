@@ -3,8 +3,7 @@ const router = express.Router();
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const usermodel = require("../Models/usermodel");
-const { isAuthenticated } = require("../Middleware/isAuthenticated");
-const cartmodel = require("../Models/cartmodel");
+const { isAuthenticated, isAdmin } = require("../Middleware/isAuthenticated");
 
 router.post("/register", async (req, res) => {
   const { name, email, password } = req.body;
@@ -15,21 +14,31 @@ router.post("/register", async (req, res) => {
   if (user) {
     return res.json({ error: "email already exist", success: false });
   }
-
-  const hashedpassword = await bcrypt.hash(password, 10);
+  const salt = await bcrypt.genSalt(10);
+  const hashedpassword = await bcrypt.hash(password, salt);
   const newuser = await usermodel.create({
     name,
     email,
     password: hashedpassword,
   });
   await newuser.save();
-  return res.json({
-    message: "Registered successfully",
-    user: newuser,
-    success: true,
+  const payload = { _id: newuser._id, role: newuser.role };
+  const token = jwt.sign(payload, process.env.JWT_SECRET, {
+    expiresIn: "1d",
   });
+  return res
+    .cookie("token", token, {
+      httpOnly: true,
+      sameSite: "strict",
+      maxAge: 1 * 24 * 60 * 60 * 1000,
+    })
+    .json({
+      message: "Registered successfully",
+      user: newuser,
+      token,
+      success: true,
+    });
 });
-
 router.post("/login", async (req, res) => {
   const { email, password } = req.body;
 
@@ -48,7 +57,7 @@ router.post("/login", async (req, res) => {
     if (!match) {
       return res.json({ error: "Invalid email or password", success: false });
     }
-    const payload = { user: { _id: user._id, role: user.role } };
+    const payload = { _id: user._id, role: user.role };
     const token = jwt.sign(payload, process.env.JWT_SECRET, {
       expiresIn: "1d",
     });
@@ -71,14 +80,10 @@ router.post("/login", async (req, res) => {
       .json({ success: false, error: "Login failed", details: err.message });
   }
 });
-// Correct way
-router.get("/user/:userId", async (req, res) => {
+router.get("/profile", isAuthenticated, async (req, res) => {
   try {
-    const user = await usermodel
-      .findById(req.params.userId)
-      .populate("orders")
-      .populate("whislist")
-      .populate("cart");
+    const userId = req.user._id;
+    const user = await usermodel.findById(userId).select("-password");
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
@@ -90,10 +95,14 @@ router.get("/user/:userId", async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 });
-
-router.get("/alluser", isAuthenticated, async (req, res) => {
-  const users = await usermodel.find();
-  res.json({ success: true, message: "all users", users });
+router.get("/alluser", isAuthenticated, isAdmin, async (req, res) => {
+  try {
+    const users = await usermodel.find({ _id: { $ne: req.user._id } });
+    res.json({ success: true, message: "all users", users });
+  } catch (error) {
+    console.error("Error fetching user:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
 });
 router.get("/logout", (req, res) => {
   return res
