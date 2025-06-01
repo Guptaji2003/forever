@@ -1,10 +1,8 @@
-const jwt  = require("jsonwebtoken");
+const jwt = require("jsonwebtoken");
 const isAuthenticated = async (req, res, next) => {
   try {
     const token = req.cookies.token;
-    // res.send(token)
-    console.log(token);
-    
+
     if (!token) {
       res.status(401).json({
         message: "User not authenticated",
@@ -18,11 +16,20 @@ const isAuthenticated = async (req, res, next) => {
         success: false,
       });
     }
-    req.id = decode.userId;
+    req.user = decode;
+    
     next();
   } catch (error) {
     console.log(error);
   }
 };
 
-module.exports = isAuthenticated;
+const isAdmin = (req, res, next) => {
+  if (req.user.role === "admin") {
+    next();
+  } else {
+    res.status(401).send({ message: "You are not authorize..." });
+  }
+};
+
+module.exports = {isAuthenticated,isAdmin};

@@ -3,7 +3,7 @@ const router = express.Router();
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const usermodel = require("../Models/usermodel");
-const isAuthenticated = require("../Middleware/isAuthenticated");
+const { isAuthenticated } = require("../Middleware/isAuthenticated");
 const cartmodel = require("../Models/cartmodel");
 
 router.post("/register", async (req, res) => {
@@ -48,8 +48,8 @@ router.post("/login", async (req, res) => {
     if (!match) {
       return res.json({ error: "Invalid email or password", success: false });
     }
-
-    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
+    const payload = { user: { _id: user._id, role: user.role } };
+    const token = jwt.sign(payload, process.env.JWT_SECRET, {
       expiresIn: "1d",
     });
 
@@ -72,24 +72,24 @@ router.post("/login", async (req, res) => {
   }
 });
 // Correct way
-router.get('/user/:userId', async (req, res) => {
+router.get("/user/:userId", async (req, res) => {
   try {
-    const user = await usermodel.findById(req.params.userId)
-      .populate('orders')
-      .populate('whislist')
-      .populate('cart');
+    const user = await usermodel
+      .findById(req.params.userId)
+      .populate("orders")
+      .populate("whislist")
+      .populate("cart");
 
     if (!user) {
-      return res.status(404).json({ message: 'User not found' });
+      return res.status(404).json({ message: "User not found" });
     }
 
     res.status(200).json(user);
   } catch (error) {
-    console.error('Error fetching user:', error);
-    res.status(500).json({ message: 'Internal server error' });
+    console.error("Error fetching user:", error);
+    res.status(500).json({ message: "Internal server error" });
   }
 });
-
 
 router.get("/alluser", isAuthenticated, async (req, res) => {
   const users = await usermodel.find();

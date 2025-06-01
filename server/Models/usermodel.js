@@ -4,32 +4,22 @@ const userschema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
+    trim:true
   },
   email: {
     type: String,
     required: true,
+    unique:true
   },
   password: {
     type: String,
     required: true,
   },
-  cart: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Product",
-    }],
-  orders: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Order",
-    },
-  ],
-  whislist:[
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Product",
-    },
-  ],
+  role:{
+    type:String,
+    enum:["user","admin"],
+    default:"user"
+  }
 });
 
 const usermodel = mongoose.model("User", userschema);

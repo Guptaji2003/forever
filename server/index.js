@@ -14,5 +14,5 @@ app.use(require("./Routes/orderroute.js"));
 
 app.listen(process.env.PORT, () => {
   connectdb();
-  console.log("server is running on port " + process.env.PORT);
+  console.log(`server is running on port ${process.env.PORT}`);
 });

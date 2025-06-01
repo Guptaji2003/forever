@@ -1,5 +1,5 @@
 const express = require("express");
-const isAuthenticated = require("../Middleware/isAuthenticated");
+const {isAuthenticated} = require("../Middleware/isAuthenticated");
 const usermodel = require("../Models/usermodel");
 const ordermodel = require("../Models/ordermodel");
 const router = express.Router();
