@@ -10,7 +10,7 @@ app.use(express.json());
 app.use(cookieParser());
 app.use("/api/users",require("./Routes/userroute.js"));
 app.use("/api/products",require("./Routes/productroute.js"));
-app.use(require("./Routes/orderroute.js"));
+app.use("/api/carts",require("./Routes/cartroute.js"));
 
 app.listen(process.env.PORT, () => {
   connectdb();

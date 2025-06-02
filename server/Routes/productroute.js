@@ -104,4 +104,41 @@ router.get("/relatedproducts/:id", isAuthenticated, async (req, res) => {
     console.log(err);
   }
 });
+router.get("/", isAuthenticated, async (req, res) => {
+  try {
+    const { category, minprice, maxprice, search, sort } = req.query;
+    let filter = {};
+    if (category && category !== "all") {
+      filter.category = category;
+    }
+    if (minprice || maxprice) {
+      filter.price = {};
+      if (minprice) filter.price.$gte = Number(minprice);
+      if (maxprice) filter.price.$lte = Number(maxprice);
+    }
+    if (search) {
+      filter.$or = [
+        { name: { $regex: search, $options: 'i' } },
+        { description: { $regex: search, $options: 'i' } },
+      ];
+    }
+
+    let sortoption={};
+    if(sort){
+      const fields=sort.split(",");
+      fields.forEach(field => {
+        sortoption[field.replace('-','')]=field.startsWith('-')?-1:1;
+      });
+    }
+
+    const products=await productmodel.find(filter).sort(sortoption);
+    res.json({
+      success: true,
+      message: "related Product fetch successfully",
+      products,
+    });
+  } catch (err) {
+    console.log(err);
+  }
+});
 module.exports = router;
