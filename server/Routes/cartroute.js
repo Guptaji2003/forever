@@ -84,14 +84,14 @@ router.put("/updatecart", isAuthenticated, async (req, res) => {
       (item) => item.productId.toString() === productId
     );
 
-    if (index > -1) {
+    if (index == -1) {
       return res
         .status(404)
         .json({ success: false, message: "Product not in cart" });
     }
     if (action === "increment") {
       cart.products[index].quantity += 1;
-    } else if (action === "decrement") {
+    } else if (action === "decrement") { 
       cart.products[index].quantity -= 1;
       if (cart.products[index].quantity <= 0) {
         cart.products.splice(index, 1); // Remove product if quantity becomes 0
