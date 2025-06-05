@@ -46,7 +46,7 @@ const cartitemschema = new mongoose.Schema({
     required: true,
     default: 1,
   },
-});
+},{_id:false});
 
 const cartschema = new mongoose.Schema(
   {

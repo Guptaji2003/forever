@@ -11,6 +11,9 @@ app.use(cookieParser());
 app.use("/api/users",require("./Routes/userroute.js"));
 app.use("/api/products",require("./Routes/productroute.js"));
 app.use("/api/carts",require("./Routes/cartroute.js"));
+app.use("/api/checkouts",require("./Routes/checkoutroute.js"));
+app.use("/api/orders",require("./Routes/orderroute.js"));
+app.use("/api/upload",require("./Routes/uploadroutes.js"));
 
 app.listen(process.env.PORT, () => {
   connectdb();
