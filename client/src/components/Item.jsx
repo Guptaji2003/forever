@@ -1,7 +1,7 @@
 import React from "react";
 import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
-import { setSelectedProduct } from "../redux/productSlice";
+// import { setSelectedProduct } from "../redux/productSlice";
 // import "./Item.css"; // Optional if you want to add external styling
 
 const Item = ({ product }) => {

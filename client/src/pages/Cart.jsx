@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setAuthUser } from "../redux/authSlice";
+// import { setAuthUser } from "../redux/authSlice";
 import axios from 'axios';
-import UseAddToCart from "../hooks/UseAddToCart";
+// import UseAddToCart from "../hooks/UseAddToCart";
 import { toast } from "react-toastify";
 // import { products } from "../assets/Product";
 

@@ -23,16 +23,16 @@ import AdminCreateProduct from "./pages/admin/AdminCreateProduct";
 const App = () => {
   return (
     <div>
-      <Navbar />
+      {/* <Navbar /> */}
       <Routes>
-        <Route path="/" element={<Home />} />
+        {/* <Route path="/" element={<Home />} />
         <Route path="/category/:name" element={<Men />} />
         <Route path="/product/:id" element={<ProductDetail />} />
         <Route path="/collection" element={<Collection />} />
-        <Route path="/cart" element={<Cart />} />
+        <Route path="/cart" element={<Cart />} /> */}
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
-        <Route path="/admin" element={<AdminDashboard />}>
+        {/* <Route path="/admin" element={<AdminDashboard />}>
           <Route path="dashboard" element={<AdminHome />} />
           <Route path="create" element={<AdminCreateProduct />} />
           <Route path="orders" element={<AdminOrders />} />
@@ -43,9 +43,9 @@ const App = () => {
           <Route path="orders" element={<UserOrders />} />
           <Route path="wishlist" element={<UserWishlist />} />
           <Route path="edit" element={<EditProfile />} />
-        </Route>
+        </Route> */}
       </Routes>
-      {/* <Footer /> */}
+      <Footer />
     </div>
   );
 };

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import ResultProducts from "../components/ResultProducts";
-import UseAddToCart from "../hooks/UseAddToCart";
+// import UseAddToCart from "../hooks/UseAddToCart";
 import { useSelector } from "react-redux";
 
 const ProductDetail = () => {

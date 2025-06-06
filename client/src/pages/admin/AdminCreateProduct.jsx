@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
-import { setProducts } from '../../redux/productSlice';
+// import { setProducts } from '../../redux/productSlice';
 import axios from 'axios'
 
 const AdminCreateProduct = () => {

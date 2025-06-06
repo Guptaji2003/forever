@@ -1,6 +1,6 @@
 import React from 'react'
 import { useSelector } from 'react-redux';
-import GetAllUsers from '../../hooks/GetAllUsers';
+// import GetAllUsers from '../../hooks/GetAllUsers';
 
 const AdminUsers = () => {
   GetAllUsers();

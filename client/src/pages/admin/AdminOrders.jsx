@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import axios from "axios";
-import GetAllOrders from "../../hooks/GetAllOrders";
+// import GetAllOrders from "../../hooks/GetAllOrders";
 import { useSelector } from "react-redux";
 const AdminOrders = () => {
   // const orders = [

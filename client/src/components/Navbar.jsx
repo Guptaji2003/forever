@@ -3,35 +3,31 @@ import { Link, useNavigate } from "react-router-dom";
 import { CgProfile } from "react-icons/cg";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
-import { setAuthUser } from "../redux/authSlice";
+// import { logoutUser} from "../redux/authSlice";
 import axios from "axios";
-import GetUser from "../hooks/GetUser";
+// import GetUser from "../hooks/GetUser";
 const Navbar = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const cartcount = 10;
   const { user } = useSelector((store) => store.auth);
   const { selectedProduct } = useSelector((store) => store.product);
-  console.log(user);
-  console.log("====================================");
-  console.log(selectedProduct);
-  console.log("====================================");
   // GetUser();
-  const logouthandle = async () => {
-    try {
-      const res = await axios.get("http://localhost:8000/logout", {
-        withCredentials: true,
-      });
-      if (res.data.success) {
-        dispatch(setAuthUser(null));
-        // dispatch(setSelectedUser(null));
-        toast.success(res.data.message);
-        navigate("/login");
-      }
-    } catch (err) {
-      console.error(err);
-    }
-  };
+  // const logouthandle = async () => {
+  //   try {
+  //     const res = await axios.get("http://localhost:8000/logout", {
+  //       withCredentials: true,
+  //     });
+  //     if (res.data.success) {
+  //       dispatch(setAuthUser(null));
+  //       // dispatch(setSelectedUser(null));
+  //       toast.success(res.data.message);
+  //       navigate("/login");
+  //     }
+  //   } catch (err) {
+  //     console.error(err);
+  //   }
+  // };
 
   return (
     <div>
@@ -134,7 +130,7 @@ const Navbar = () => {
                           </li>
                         </Link>
                         <li
-                          onClick={() => logouthandle()}
+                          onClick={() => dispatch(logoutUser())}
                           className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
                         >
                           Logout

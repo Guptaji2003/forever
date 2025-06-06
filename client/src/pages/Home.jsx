@@ -3,7 +3,7 @@ import Hero from "../components/Hero";
 import Item from "../components/Item";
 import { products } from "../assets/Product";
 import NewArrival from "../components/NewArrival";
-import GetAllProducts from "../hooks/GetAllProducts";
+// import GetAllProducts from "../hooks/GetAllProducts";
 import { useSelector } from "react-redux";
 
 const Home = () => {
