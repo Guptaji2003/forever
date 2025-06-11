@@ -3,31 +3,14 @@ import { Link, useNavigate } from "react-router-dom";
 import { CgProfile } from "react-icons/cg";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
-// import { logoutUser} from "../redux/authSlice";
 import axios from "axios";
-// import GetUser from "../hooks/GetUser";
+import { logoutUser } from "../redux/slice/authSlice";
 const Navbar = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const cartcount = 10;
-  const { user } = useSelector((store) => store.auth);
-  const { selectedProduct } = useSelector((store) => store.product);
-  // GetUser();
-  // const logouthandle = async () => {
-  //   try {
-  //     const res = await axios.get("http://localhost:8000/logout", {
-  //       withCredentials: true,
-  //     });
-  //     if (res.data.success) {
-  //       dispatch(setAuthUser(null));
-  //       // dispatch(setSelectedUser(null));
-  //       toast.success(res.data.message);
-  //       navigate("/login");
-  //     }
-  //   } catch (err) {
-  //     console.error(err);
-  //   }
-  // };
+  const { user, isAuthenticated, loading, error } = useSelector((state) => state.auth);
+
+ 
 
   return (
     <div>

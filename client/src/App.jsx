@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
@@ -19,20 +19,28 @@ import UserHome from "./pages/user/UserHome";
 import EditProfile from "./pages/user/EditProfile";
 import Signup from "./pages/Signup";
 import AdminCreateProduct from "./pages/admin/AdminCreateProduct";
+import { useDispatch } from "react-redux";
+import { fetchAllProducts } from "./redux/slice/productSlice";
+// import { checkAuth } from "./redux/slice/authSlice";
 
 const App = () => {
+  const dispatch = useDispatch();
+  React.useEffect(() => {
+    dispatch(fetchAllProducts());
+  }, [dispatch]);
+
   return (
     <div>
-      {/* <Navbar /> */}
+      <Navbar />
       <Routes>
-        {/* <Route path="/" element={<Home />} />
+        <Route path="/" element={<Home />} />
         <Route path="/category/:name" element={<Men />} />
         <Route path="/product/:id" element={<ProductDetail />} />
         <Route path="/collection" element={<Collection />} />
-        <Route path="/cart" element={<Cart />} /> */}
+        {/* <Route path="/cart" element={<Cart />} /> */}
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
-        {/* <Route path="/admin" element={<AdminDashboard />}>
+        <Route path="/admin" element={<AdminDashboard />}>
           <Route path="dashboard" element={<AdminHome />} />
           <Route path="create" element={<AdminCreateProduct />} />
           <Route path="orders" element={<AdminOrders />} />
@@ -43,7 +51,7 @@ const App = () => {
           <Route path="orders" element={<UserOrders />} />
           <Route path="wishlist" element={<UserWishlist />} />
           <Route path="edit" element={<EditProfile />} />
-        </Route> */}
+        </Route>
       </Routes>
       <Footer />
     </div>

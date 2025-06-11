@@ -2,7 +2,7 @@ import React from 'react'
 import { useSelector } from 'react-redux';
 
 const AdminHome = () => {
-  const {orders}=useSelector(store=>store.order);
+  // const {orders}=useSelector(store=>store.order);
   const {allUsers}=useSelector(store=>store.auth);
 
   return (
@@ -11,11 +11,11 @@ const AdminHome = () => {
         <div className="grid grid-cols-3 gap-4 mt-5">
           <div className="bg-white shadow-md p-4 rounded-lg">
             <h2 className="text-lg font-semibold">Total Orders</h2>
-            <p className="text-2xl">{orders.length}</p>
+            {/* <p className="text-2xl">{orders.length}</p> */}
           </div>
           <div className="bg-white shadow-md p-4 rounded-lg">
             <h2 className="text-lg font-semibold">Active Users</h2>
-            <p className="text-2xl">{allUsers.length}</p>
+            {/* <p className="text-2xl">{allUsers.length}</p> */}
           </div>
           <div className="bg-white shadow-md p-4 rounded-lg">
             <h2 className="text-lg font-semibold">Total Outlets</h2>

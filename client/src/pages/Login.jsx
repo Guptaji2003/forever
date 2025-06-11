@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-// import { setAuthUser } from '../redux/authSlice';
 import { toast } from "react-toastify";
 import axios from "axios";
 import { loginUser } from "../redux/slice/authSlice";
@@ -19,10 +18,20 @@ const Login = () => {
     setinput({ ...input, [e.target.name]: e.target.value });
   };
 
-  const postdata = (e) => {
-    e.preventDefault();
-    dispatch(loginUser(input));
-  };
+ const postdata = async (e) => {
+  e.preventDefault();
+  setloading(true);
+  try {
+    const result = await dispatch(loginUser(input)).unwrap(); // unwrap to handle success/error
+    toast.success("Login successful");
+    navigate("/");
+  } catch (err) {
+    toast.error(err || "Login failed");
+  } finally {
+    setloading(false);
+  }
+};
+
 
   return (
     <div>
@@ -90,7 +99,7 @@ const Login = () => {
               type="submit"
               class="w-full px-4 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition"
             >
-              Login
+              {loading?"Wait for a second":"Login"}
             </button>
           </form>
 

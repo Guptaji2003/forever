@@ -1,14 +1,16 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import axios from 'axios'
+import axios from "axios";
 import { toast } from "react-toastify";
+import { registerUser } from "../redux/slice/authSlice";
 
 const Signup = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [loading, setloading] = useState(false);
   const [input, setinput] = useState({
+    name: "",
     email: "",
     password: "",
   });
@@ -19,25 +21,13 @@ const Signup = () => {
 
   const postdata = async (e) => {
     e.preventDefault();
-
+    setloading(true);
     try {
-      setloading(true);
-      const res = await axios.post("http://localhost:8000/register", input, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-        withCredentials: true,
-      });
-      if (res.data.success) {
-        // dispatch(setAuthUser(res.data.user));
-        toast.success(res.data.message);
-        navigate("/");
-      } else {
-        toast.error(res.data.error);
-      }
-      console.log(res.data);
+      dispatch(registerUser(input));
+      toast.success("signup successfully");
+      navigate("/");
     } catch (error) {
-      console.error("Error:", error);
+      console.log(error);
     } finally {
       setloading(false);
     }
@@ -109,7 +99,7 @@ const Signup = () => {
               type="submit"
               class="w-full px-4 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition"
             >
-              Sign Up
+              {loading ? "wait for second" : "Sign Up"}
             </button>
           </form>
 

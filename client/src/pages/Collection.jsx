@@ -1,39 +1,45 @@
 import React, { useState } from "react";
 // import { products } from "../assets/Product";
 import Item from "../components/Item";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchAllProducts } from "../redux/slice/productSlice";
 
 const Collection = () => {
-  const [category, setcategory] = useState("");
-  const [price, setprice] = useState(0);
-  const [query, setquery] = useState("");
-  const [result, setresult] = useState([]);
-  const {products}=useSelector(store=>store.product);
+  // const [category, setcategory] = useState("");
+  // const [price, setprice] = useState(0);
+  // const [query, setquery] = useState("");
+  // const [result, setresult] = useState([]);
+  const { allProducts } = useSelector((store) => store.product);
 
-
-  const resetFilter = () => {
-setcategory('');
-setprice(0);
-setresult([]);
-
-0}
-
+ const dispatch = useDispatch();
   React.useEffect(() => {
-    const Products = products.filter(
-      (product) =>
-        (category ? product.category.toLowerCase() === category : true) &&
-        (price ? product.price < price : true) &&
-        (query
-          ? product.name.toLowerCase().includes(query.toLowerCase())
-          : true)
-    );
-    setresult(Products);
-  }, [category, price, query]);
+    dispatch(fetchAllProducts());
+  }, [dispatch]);
+
+  // const resetFilter = () => {
+  //   setcategory("");
+  //   setprice(0);
+  //   setresult([]);
+
+  //   0;
+  // };
+
+  // React.useEffect(() => {
+  //   const Products = products.filter(
+  //     (product) =>
+  //       (category ? product.category.toLowerCase() === category : true) &&
+  //       (price ? product.price < price : true) &&
+  //       (query
+  //         ? product.name.toLowerCase().includes(query.toLowerCase())
+  //         : true)
+  //   );
+  //   setresult(Products);
+  // }, [category, price, query]);
 
   return (
     <>
       <div>
-        <div className="flex w-100 m-auto   items-center space-x-2 p-4 rounded-2xl ">
+        {/* <div className="flex w-100 m-auto   items-center space-x-2 p-4 rounded-2xl ">
           <input
             type="text"
             placeholder="Search here..."
@@ -41,15 +47,13 @@ setresult([]);
             onChange={(e) => setquery(e.target.value)}
             className="w-full p-2 border  focus:outline-none focus:ring focus:ring-black"
           />
-        </div>
+        </div> */}
         <div class="max-w-screen-xl  mx-auto px-4 py-8">
           <div class="flex ">
-            {/* <!-- Sidebar Filters --> */}
-            
-            <div class="w-full lg:w-1/4 p-4 bg-white shadow-md rounded-md mb-6 lg:mb-0 ">
+
+            {/* <div class="w-full lg:w-1/4 p-4 bg-white shadow-md rounded-md mb-6 lg:mb-0 ">
               <h3 class="text-2xl font-semibold text-gray-800 mb-6">Filters</h3>
 
-              {/* <!-- Category Filter --> */}
 
               <div className="category-select mb-6">
                 <label
@@ -71,7 +75,7 @@ setresult([]);
                 </select>
               </div>
 
-              {/* <div class="mb-6">
+              <div class="mb-6">
                 <h4 class="text-lg font-medium text-gray-700 mb-2">Category</h4>
                 <ul class="space-y-2">
                   <li>
@@ -111,9 +115,8 @@ setresult([]);
                     </label>
                   </li>
                 </ul>
-              </div> */}
+              </div>
 
-              {/* <!-- Price Filter --> */}
               <div class="mb-6">
                 <h4 class="text-lg font-medium text-gray-700 mb-2">
                   Price Range <span className="font-light">[0 to {price}]</span>
@@ -132,16 +135,16 @@ setresult([]);
                 </div>
               </div>
 
-              <button onClick={resetFilter}
+              <button
+                onClick={resetFilter}
                 className="w-full px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700"
               >
                 Reset Filters
               </button>
-            </div>
+            </div> */}
 
-            {/* <!-- Product Grid --> */}
             <div className="overflow-y-scroll h-150 w-300 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-10 ">
-              {result.map((product) => (
+              {allProducts.map((product) => (
                 <Item key={product.id} product={product} />
               ))}
             </div>

@@ -1,58 +1,83 @@
-// src/features/auth/authSlice.js
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import axios from "axios";
 
-// Automatically send cookies with requests
 axios.defaults.withCredentials = true;
 const apiurl = import.meta.env.VITE_BACKEND_URL;
-console.log('====================================');
-console.log(apiurl);
-console.log('====================================');
+
+const userfromstorage = localStorage.getItem("user")
+  ? JSON.parse(localStorage.getItem("user"))
+  : null;
+
 // Thunk to login
 export const loginUser = createAsyncThunk(
-  'auth/loginUser',
+  "auth/loginUser",
   async (credentials, thunkAPI) => {
     try {
       const res = await axios.post(`${apiurl}/api/users/login`, credentials);
+      localStorage.setItem("user", JSON.stringify(res.data.user));
+      localStorage.setItem("token", res.data.token);
       return res.data.user; // assume backend returns { user: {...} }
     } catch (err) {
-      return thunkAPI.rejectWithValue(err.response.data.message || 'Login failed');
+      return thunkAPI.rejectWithValue(
+        err.response.data.message || "Login failed"
+      );
     }
   }
 );
 
 // Thunk to register
 export const registerUser = createAsyncThunk(
-  'auth/registerUser',
+  "auth/registerUser",
   async (credentials, thunkAPI) => {
     try {
       const res = await axios.post(`${apiurl}/api/users/register`, credentials);
+      localStorage.setItem("user", JSON.stringify(res.data.user));
+      localStorage.setItem("token", res.data.token);
+
       return res.data.user;
     } catch (err) {
-      return thunkAPI.rejectWithValue(err.response.data.message || 'Registration failed');
+      return thunkAPI.rejectWithValue(
+        err.response.data.message || "Registration failed"
+      );
+    }
+  }
+);
+
+export const AllUser = createAsyncThunk(
+  "auth/allUser",
+  async (_, thunkAPI) => {
+    try {
+      const res = await axios.get(`${apiurl}/api/users/alluser`);
+      return res.data.users;
+    } catch (err) {
+      return thunkAPI.rejectWithValue(
+        err.response.data.message || "all user failed"
+      );
     }
   }
 );
 
 // Thunk to check session on page load
-export const checkAuth = createAsyncThunk(
-  'auth/checkAuth',
-  async (_, thunkAPI) => {
-    try {
-      const res = await axios.get(`${apiurl}/api/users/me`); // returns current user if cookie is valid
-      return res.data.user;
-    } catch (err) {
-      return thunkAPI.rejectWithValue('Not authenticated');
-    }
-  }
-);
+// export const checkAuth = createAsyncThunk(
+//   "auth/checkAuth",
+//   async (_, thunkAPI) => {
+//     try {
+//       const res = await axios.get(`${apiurl}/api/users/profile`); // returns current user if cookie is valid
+//       return res.data.user;
+//     } catch (err) {
+//       return thunkAPI.rejectWithValue("Not authenticated");
+//     }
+//   }
+// );
 
 // Thunk to logout
 export const logoutUser = createAsyncThunk(
-  'auth/logoutUser',
+  "auth/logoutUser",
   async (_, thunkAPI) => {
     try {
       await axios.get(`${apiurl}/api/users/logout`);
+      localStorage.removeItem("user");
+      localStorage.removeItem("token");
     } catch (err) {
       console.log(err);
     }
@@ -60,9 +85,10 @@ export const logoutUser = createAsyncThunk(
 );
 
 const authSlice = createSlice({
-  name: 'auth',
+  name: "auth",
   initialState: {
-    user: null,
+    user: userfromstorage,
+    alluser:[],
     isAuthenticated: false,
     loading: false,
     error: null,
@@ -92,13 +118,30 @@ const authSlice = createSlice({
       })
 
       // CHECK AUTH
-      .addCase(checkAuth.fulfilled, (state, action) => {
-        state.user = action.payload;
-        state.isAuthenticated = true;
+      // .addCase(checkAuth.fulfilled, (state, action) => {
+      //   state.user = action.payload;
+      //   state.isAuthenticated = true;
+      // })
+      // .addCase(checkAuth.rejected, (state) => {
+      //   state.user = null;
+      //   state.isAuthenticated = false;
+      // })
+
+       // alluser
+        .addCase(AllUser.pending, (state) => {
+        state.loading = true;
       })
-      .addCase(checkAuth.rejected, (state) => {
-        state.user = null;
-        state.isAuthenticated = false;
+      .addCase(AllUser.fulfilled, (state, action) => {
+        state.alluser = action.payload;
+        state.loading = false;
+
+        // state.isAuthenticated = true;
+      })
+      .addCase(AllUser.rejected, (state) => {
+        state.alluser = null;
+        // state.isAuthenticated = false;
+         state.error = action.payload;
+        state.loading = false;
       })
 
       // LOGOUT

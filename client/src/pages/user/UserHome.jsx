@@ -23,11 +23,11 @@ const UserHome = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="p-6 bg-[#F1F5F9] text-gray-800 rounded-lg shadow-md text-center">
               <p className="text-lg font-semibold">Orders</p>
-              <p className="text-3xl font-bold">{user.orders.length}</p>
+              {/* <p className="text-3xl font-bold">{user.orders.length}</p> */}
             </div>
             <div className="p-6 bg-[#F1F5F9] text-gray-800 rounded-lg shadow-md text-center">
               <p className="text-lg font-semibold">Wishlist</p>
-              <p className="text-3xl font-bold">{user.whislist.length}</p>
+              {/* <p className="text-3xl font-bold">{user.whislist.length}</p> */}
             </div>
             <div className="p-6 bg-[#F1F5F9] text-gray-800 rounded-lg shadow-md text-center">
               <p className="text-lg font-semibold">Total Spent</p>

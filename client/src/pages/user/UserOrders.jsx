@@ -2,38 +2,38 @@ import React from "react";
 import { useSelector } from "react-redux";
 
 const UserOrders = () => {
-  const { user } = useSelector((store) => store.auth);
+  // const { user } = useSelector((store) => store.auth);
 
-  // const orders = [
-  //     {
-  //       id: "ORD12345",
-  //       date: "March 30, 2025",
-  //       status: "Shipped",
-  //       total: "$150",
-  //       items: [
-  //         { name: "Blue Denim Jacket", image: "https://via.placeholder.com/100", price: "$50" },
-  //         { name: "White Sneakers", image: "https://via.placeholder.com/100", price: "$100" },
-  //         { name: "Black Hoodie", image: "https://via.placeholder.com/100", price: "$70" },
-  //         { name: "Red Cap", image: "https://via.placeholder.com/100", price: "$20" }
-  //       ]
-  //     },
-  //     {
-  //       id: "ORD67890",
-  //       date: "March 25, 2025",
-  //       status: "Delivered",
-  //       total: "$80",
-  //       items: [
-  //         { name: "Black T-Shirt", image: "https://via.placeholder.com/100", price: "$30" },
-  //         { name: "Gray Joggers", image: "https://via.placeholder.com/100", price: "$50" }
-  //       ]
-  //     }
-  //   ];
+  const orders = [
+      {
+        id: "ORD12345",
+        date: "March 30, 2025",
+        status: "Shipped",
+        total: "$150",
+        items: [
+          { name: "Blue Denim Jacket", image: "https://via.placeholder.com/100", price: "$50" },
+          { name: "White Sneakers", image: "https://via.placeholder.com/100", price: "$100" },
+          { name: "Black Hoodie", image: "https://via.placeholder.com/100", price: "$70" },
+          { name: "Red Cap", image: "https://via.placeholder.com/100", price: "$20" }
+        ]
+      },
+      {
+        id: "ORD67890",
+        date: "March 25, 2025",
+        status: "Delivered",
+        total: "$80",
+        items: [
+          { name: "Black T-Shirt", image: "https://via.placeholder.com/100", price: "$30" },
+          { name: "Gray Joggers", image: "https://via.placeholder.com/100", price: "$50" }
+        ]
+      }
+    ];
 
   return (
     <div className=" w-300 overflow-y-scroll h-150 bg-gray-50 p-6">
       <h2 className="text-3xl font-bold text-gray-800 mb-6">My Orders</h2>
       <div className="space-y-6">
-        {user?.orders.map((order) => (
+        {orders.map((order) => (
           <div key={order._id} className="bg-white shadow-md rounded-lg p-6">
             <div className="flex justify-between items-center border-b pb-4 mb-4">
               <div>

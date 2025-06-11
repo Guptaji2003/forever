@@ -34,7 +34,7 @@ router.post("/createproduct", isAuthenticated, isAdmin, async (req, res) => {
     product,
   });
 });
-router.put("/:id", isAuthenticated, isAdmin, async (req, res) => {
+router.put("/updateproduct/:id", isAuthenticated, isAdmin, async (req, res) => {
   const productId = req.params.id;
   const { name, price, image, category, description, size, color } = req.body;
   const product = await productmodel.findById(productId);
@@ -48,7 +48,7 @@ router.put("/:id", isAuthenticated, isAdmin, async (req, res) => {
   await product.save();
   return res.status(401).json({ message: "updated this product", product });
 });
-router.delete("/:id", isAuthenticated, isAdmin, async (req, res) => {
+router.delete("/deleteproduct/:id", isAuthenticated, isAdmin, async (req, res) => {
   try {
     const productId = req.params.id;
     const product = await productmodel.findById(productId);
@@ -62,7 +62,7 @@ router.delete("/:id", isAuthenticated, isAdmin, async (req, res) => {
     console.log(err);
   }
 });
-router.get("/:id", isAuthenticated, async (req, res) => {
+router.get("/singleproduct/:id", isAuthenticated, async (req, res) => {
   try {
     const productId = req.params.id;
     const product = await productmodel.findById(productId);
@@ -80,7 +80,7 @@ router.get("/newarrivals", isAuthenticated, async (req, res) => {
     const products = await productmodel.find().sort({ createdAt: -1 }).limit(8);
     res.json({
       success: true,
-      message: "single Product fetch successfully",
+      message: "new arrivals fetch successfully",
       products,
     });
   } catch (err) {
@@ -99,12 +99,12 @@ router.get("/relatedproducts/:id", isAuthenticated, async (req, res) => {
       success: true,
       message: "related Product fetch successfully",
       products,
-    });
+    }); 
   } catch (err) {
     console.log(err);
   }
 });
-router.get("/", isAuthenticated, async (req, res) => {
+router.get("/filter", isAuthenticated, async (req, res) => {
   try {
     const { category, minprice, maxprice, search, sort } = req.query;
     let filter = {};
