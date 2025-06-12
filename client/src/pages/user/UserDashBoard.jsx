@@ -15,47 +15,53 @@ const UserDashBoard = () => {
   // };
 
   return (
-    <div className="h-180 bg-gray-50 flex">
-      {/* Sidebar */}
-      <div className="w-64 bg-[#1E293B] text-white p-6 flex flex-col space-y-6">
-        <div className="flex items-center space-x-4">
-          {/* <img
-            src={user.profilePic}
-            alt="Profile"
-            className="w-16 h-16 rounded-full border"
-          /> */}
-          <div>
-            <h2 className="text-xl font-bold">{user.name}</h2>
-            <p className="text-gray-400 text-sm">{user.email}</p>
-          </div>
+   <div className="min-h-screen bg-gray-100 flex">
+  {/* Sidebar */}
+  <aside className="w-72 bg-slate-900 text-white flex flex-col justify-between py-6 px-4 shadow-lg">
+    <div>
+      {/* User Info */}
+      <div className="flex items-center space-x-4 mb-8 border-b border-slate-700 pb-4">
+        {/* <img src={user.profilePic} alt="Profile" className="w-14 h-14 rounded-full border-2 border-white" /> */}
+        <div>
+          <h2 className="text-xl font-semibold">{user.name}</h2>
+          <p className="text-sm text-slate-400">{user.email}</p>
         </div>
-        <nav className="flex flex-col space-y-4">
-          <Link to={'/user/profile'}>
-            <button className="text-left w-full px-4 py-2 bg-[#334155] rounded-lg hover:bg-[#475569]">
-              Dashboard
-            </button>
-          </Link>
-          <Link to={'/user/orders'}>
-            <button className="text-left w-full px-4 py-2 bg-[#334155] rounded-lg hover:bg-[#475569]">
-              My Orders
-            </button>
-          </Link>
-          <Link to={'/user/wishlist'}>
-            <button className="text-left w-full px-4 py-2 bg-[#334155] rounded-lg hover:bg-[#475569]">
-              Wishlist
-            </button>
-          </Link>
-          {/* <Link>
-            <button className="text-left w-full px-4 py-2 bg-[#DC2626] rounded-lg hover:bg-[#B91C1C]">
-              Logout
-            </button>
-          </Link> */}
-        </nav>
       </div>
 
-      {/* Main Content */}
-      <Outlet/>
+      {/* Navigation Links */}
+      <nav className="space-y-3">
+        <Link to="/user/profile">
+          <button className="w-full text-left px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 transition">
+            🏠 Dashboard
+          </button>
+        </Link>
+        <Link to="/user/orders">
+          <button className="w-full text-left px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 transition">
+            📦 My Orders
+          </button>
+        </Link>
+        <Link to="/user/wishlist">
+          <button className="w-full text-left px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 transition">
+            ❤️ Wishlist
+          </button>
+        </Link>
+      </nav>
     </div>
+
+    {/* Logout (Optional) */}
+    {/* <div className="mt-10">
+      <button className="w-full text-left px-4 py-2 bg-red-600 hover:bg-red-700 rounded-lg transition">
+        🚪 Logout
+      </button>
+    </div> */}
+  </aside>
+
+  {/* Main Content Area */}
+  <main className="flex-1 p-6 overflow-y-auto">
+    <Outlet />
+  </main>
+</div>
+
   );
 };
 

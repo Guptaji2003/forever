@@ -8,9 +8,8 @@ import { logoutUser } from "../redux/slice/authSlice";
 const Navbar = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { user, isAuthenticated, loading, error } = useSelector((state) => state.auth);
-
- 
+  const { user } = useSelector((state) => state.auth);
+  const { cartcount } = useSelector((state) => state.cart);
 
   return (
     <div>
@@ -63,72 +62,67 @@ const Navbar = () => {
               </div>
             )}
             {/* <!-- Cart & User Section --> */}
-            <div class="flex  items-center space-x-6">
-              {user ? (
-                <>
-                  {" "}
-                  <a
-                    href="/cart"
-                    class="text-gray-700 hover:text-gray-900 flex relative  items-center"
+            {user && (
+              <div class="flex  items-center space-x-6">
+                <a
+                  href="/cart"
+                  class="text-gray-700 hover:text-gray-900 flex relative  items-center"
+                >
+                  <svg
+                    class="w-6 h-6"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
                   >
-                    <svg
-                      class="w-6 h-6"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m12-9l2 9m-6-2a2 2 0 100 4 2 2 0 000-4z"
-                      ></path>
-                    </svg>
-                    <span className="absolute -top-3 -right-2 text-white text-xs bg-red-600 rounded-4xl px-1">
-                      {user?.cart?.length}
-                    </span>
-                  </a>
-                  <div className="relative group">
-                    <span>
-                      <CgProfile size={25} />
-                    </span>
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m12-9l2 9m-6-2a2 2 0 100 4 2 2 0 000-4z"
+                    ></path>
+                  </svg>
+                  <span className="absolute -top-3 -right-2 text-white text-xs bg-red-600 rounded-4xl px-1">
+                    {cartcount}
+                  </span>
+                </a>
+                <div className="relative group">
+                  <span>
+                    <CgProfile size={25} />
+                  </span>
 
-                    <div className="absolute z-99 -right-15 mt-2 w-40 bg-white border rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-                      <ul className="py-2">
-                        <Link to={"/user/profile"}>
-                          <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
-                            Profile
-                          </li>
-                        </Link>
+                  <div className="absolute z-99 -right-15 mt-2 w-40 bg-white border rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                    <ul className="py-2">
+                      <Link to={"/user/profile"}>
+                        <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
+                          Profile
+                        </li>
+                      </Link>
+                      {user?.role === "admin" && (
                         <Link to={"/admin/dashboard"}>
                           {" "}
                           <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
                             Admin
                           </li>
-                        </Link>{" "}
-                        <Link to={"/user/orders"}>
-                          <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
-                            Orders
-                          </li>
                         </Link>
-                        <li
-                          onClick={() => dispatch(logoutUser())}
-                          className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-                        >
-                          Logout
+                      )}
+
+                      <Link to={"/user/orders"}>
+                        <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
+                          Orders
                         </li>
-                      </ul>
-                    </div>
+                      </Link>
+                      <li
+                        onClick={() => dispatch(logoutUser())}
+                        className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                      >
+                        Logout
+                      </li>
+                    </ul>
                   </div>
-                </>
-              ) : (
-                // <a href="/signup" class="text-gray-700 hover:text-gray-900">
-                //   Sign Up
-                // </a>
-                <></>
-              )}
-            </div>
+                </div>
+              </div>
+            )}
             {/* <!-- Mobile Menu Button --> */}
             <div class="md:hidden flex items-center">
               <button

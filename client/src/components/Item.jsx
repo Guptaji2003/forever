@@ -21,7 +21,7 @@ const Item = ({ product }) => {
     >
       <div className="border p-4 rounded-lg shadow-sm">
         <img
-          src={product.image}
+          src={product?.image?.[0]?.url}
           alt="Carabiner Set"
           className="rounded-lg w-full"
         />

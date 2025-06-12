@@ -5,7 +5,7 @@ const AdminDashboard = () => {
   const [open, setOpen] = useState(true);
 
   return (
-    <div className="flex h-screen bg-gray-100">
+    <div className="flex h-180 bg-gray-100">
       {/* Sidebar */}
       <div
         className={`bg-blue-900 text-white p-5 ${

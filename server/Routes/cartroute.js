@@ -7,7 +7,7 @@ const cartmodel = require("../Models/cartmodel");
 router.get("/usercart", isAuthenticated, async (req, res) => {
   try {
     const userId = req.user._id;
-    const cart = await cartmodel.find({ userId: userId });
+    const cart = await cartmodel.findOne({ userId: userId });
     if (!cart) return res.status(400).send({ message: "no cart found" });
 
     return res.status(200).json({
@@ -122,6 +122,9 @@ router.put("/updatecart", isAuthenticated, async (req, res) => {
 router.delete("/removecartitem", isAuthenticated, async (req, res) => {
   try {
     const { productId } = req.body; // Use body for DELETE
+    console.log('====================================');
+    console.log(productId);
+    console.log('====================================');
     const userId = req.user._id;
 
     const cart = await cartmodel.findOne({ userId });

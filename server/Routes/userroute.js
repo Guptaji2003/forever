@@ -80,8 +80,9 @@ router.post("/login", async (req, res) => {
       .json({ success: false, error: "Login failed", details: err.message });
   }
 });
-router.get("/profile", isAuthenticated, async (req, res) => {
+router.put("/updateprofile", isAuthenticated, async (req, res) => {
   try {
+    
     const userId = req.user._id;
     const user = await usermodel.findById(userId).select("-password");
 
@@ -95,6 +96,8 @@ router.get("/profile", isAuthenticated, async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 });
+
+
 router.get("/alluser", isAuthenticated, isAdmin, async (req, res) => {
   try {
     const users = await usermodel.find({ _id: { $ne: req.user._id } });

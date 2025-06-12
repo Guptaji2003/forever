@@ -7,7 +7,7 @@ const ordermodel = require("../Models/ordermodel");
 
 router.get("/allorders", isAuthenticated, isAdmin, async (req, res) => {
   try {
-    const orders = await ordermodel.find();
+    const orders = await ordermodel.find().populate("userId","name email");
     if (!orders) return res.status(400).send({ message: "no orders" });
 
     return res.status(200).json({

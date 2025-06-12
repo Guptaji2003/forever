@@ -1,157 +1,124 @@
-import React, { useState } from "react";
-// import { products } from "../assets/Product";
+import React, { useEffect, useState } from "react";
 import Item from "../components/Item";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchAllProducts } from "../redux/slice/productSlice";
+import { filterProducts } from "../redux/slice/productSlice";
 
 const Collection = () => {
-  // const [category, setcategory] = useState("");
-  // const [price, setprice] = useState(0);
-  // const [query, setquery] = useState("");
-  // const [result, setresult] = useState([]);
-  const { allProducts } = useSelector((store) => store.product);
+   const dispatch = useDispatch();
+  const { filteredProducts } = useSelector((state) => state.product);
 
- const dispatch = useDispatch();
-  React.useEffect(() => {
-    dispatch(fetchAllProducts());
-  }, [dispatch]);
+  const [search, setSearch] = useState("");
+  const [category, setCategory] = useState("");
+  const [minprice, setMinprice] = useState("");
+  const [maxprice, setMaxprice] = useState("");
+  const [sort, setSort] = useState("");
 
-  // const resetFilter = () => {
-  //   setcategory("");
-  //   setprice(0);
-  //   setresult([]);
+  useEffect(() => {
+    dispatch(filterProducts({ category, minprice, maxprice, search, sort }));
+  }, [category, minprice, maxprice, search, sort]);
 
-  //   0;
-  // };
-
-  // React.useEffect(() => {
-  //   const Products = products.filter(
-  //     (product) =>
-  //       (category ? product.category.toLowerCase() === category : true) &&
-  //       (price ? product.price < price : true) &&
-  //       (query
-  //         ? product.name.toLowerCase().includes(query.toLowerCase())
-  //         : true)
-  //   );
-  //   setresult(Products);
-  // }, [category, price, query]);
+  const resetFilters = () => {
+    setSearch("");
+    setCategory("");
+    setMinprice("");
+    setMaxprice("");
+    setSort("");
+  };
 
   return (
-    <>
-      <div>
-        {/* <div className="flex w-100 m-auto   items-center space-x-2 p-4 rounded-2xl ">
+    <div className="bg-gray-100 min-h-screen p-6">
+      <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-6">
+        {/* Sidebar Filters */}
+        <div className="lg:w-1/4 bg-white p-6 rounded-xl shadow-lg">
+          <h2 className="text-2xl font-bold mb-4 text-gray-800">Filters</h2>
+
+          {/* Search */}
           <input
             type="text"
-            placeholder="Search here..."
-            value={query}
-            onChange={(e) => setquery(e.target.value)}
-            className="w-full p-2 border  focus:outline-none focus:ring focus:ring-black"
+            placeholder="Search products..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="w-full p-2 mb-4 border rounded-md focus:ring-2 focus:ring-blue-500"
           />
-        </div> */}
-        <div class="max-w-screen-xl  mx-auto px-4 py-8">
-          <div class="flex ">
 
-            {/* <div class="w-full lg:w-1/4 p-4 bg-white shadow-md rounded-md mb-6 lg:mb-0 ">
-              <h3 class="text-2xl font-semibold text-gray-800 mb-6">Filters</h3>
+          {/* Category */}
+          <label className="block text-sm font-semibold text-gray-700 mb-1">
+            Category
+          </label>
+          <select
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+            className="w-full p-2 mb-4 border rounded-md focus:ring-2 focus:ring-blue-500"
+          >
+            <option value="">All Categories</option>
+            <option value="Men">Men</option>
+            <option value="Women">Women</option>
+            <option value="Kids">Kids</option>
+          </select>
 
+          {/* Price Range */}
+          <div className="mb-4">
+            <label className="block text-sm font-semibold text-gray-700 mb-1">
+              Min Price
+            </label>
+            <input
+              type="number"
+              value={minprice}
+              onChange={(e) => setMinprice(e.target.value)}
+              className="w-full p-2 border rounded-md mb-2"
+            />
+            <label className="block text-sm font-semibold text-gray-700 mb-1">
+              Max Price
+            </label>
+            <input
+              type="number"
+              value={maxprice}
+              onChange={(e) => setMaxprice(e.target.value)}
+              className="w-full p-2 border rounded-md"
+            />
+          </div>
 
-              <div className="category-select mb-6">
-                <label
-                  htmlFor="category"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  Select Category
-                </label>
-                <select
-                  id="category"
-                  name="category"
-                  onChange={(e) => setcategory(e.target.value)}
-                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                >
-                  <option value="">All Categories</option>
-                  <option value="men">Men</option>
-                  <option value="women">Women</option>
-                  <option value="kids">Kids</option>
-                </select>
-              </div>
+          {/* Sort Options */}
+          <label className="block text-sm font-semibold text-gray-700 mb-1">
+            Sort By
+          </label>
+          <select
+            value={sort}
+            onChange={(e) => setSort(e.target.value)}
+            className="w-full p-2 mb-6 border rounded-md"
+          >
+            <option value="">Default</option>
+            <option value="price">Price: Low to High</option>
+            <option value="-price">Price: High to Low</option>
+            <option value="name">Name: A-Z</option>
+            <option value="-name">Name: Z-A</option>
+          </select>
 
-              <div class="mb-6">
-                <h4 class="text-lg font-medium text-gray-700 mb-2">Category</h4>
-                <ul class="space-y-2">
-                  <li>
-                    <input
-                      type="checkbox"
-                      value="men"
-                      onChange={(e) => setcategory(e.target.value)}
-                      id="men"
-                      class="mr-2"
-                    />
-                    <label for="men" class="text-gray-600">
-                      Men
-                    </label>
-                  </li>
-                  <li>
-                    <input
-                      type="checkbox"
-                      value="women"
-                      onChange={(e) => setcategory(e.target.value)}
-                      id="women"
-                      class="mr-2"
-                    />
-                    <label for="women" class="text-gray-600">
-                      Women
-                    </label>
-                  </li>
-                  <li>
-                    <input
-                      type="checkbox"
-                      value="kids"
-                      onChange={(e) => setcategory(e.target.value)}
-                      id="kids"
-                      class="mr-2"
-                    />
-                    <label for="kids" class="text-gray-600">
-                      Kids
-                    </label>
-                  </li>
-                </ul>
-              </div>
+          {/* Reset Button */}
+          <button
+            onClick={resetFilters}
+            className="w-full bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600 transition"
+          >
+            Reset Filters
+          </button>
+        </div>
 
-              <div class="mb-6">
-                <h4 class="text-lg font-medium text-gray-700 mb-2">
-                  Price Range <span className="font-light">[0 to {price}]</span>
-                </h4>
-                <input
-                  type="range"
-                  min="0"
-                  max="10000"
-                  class="w-full mt-2"
-                  value={price}
-                  onChange={(e) => setprice(e.target.value)}
-                />
-                <div class="flex justify-between text-gray-600 text-sm">
-                  <span>$0</span>
-                  <span>$10,000</span>
-                </div>
-              </div>
-
-              <button
-                onClick={resetFilter}
-                className="w-full px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700"
-              >
-                Reset Filters
-              </button>
-            </div> */}
-
-            <div className="overflow-y-scroll h-150 w-300 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-10 ">
-              {allProducts.map((product) => (
-                <Item key={product.id} product={product} />
+        {/* Product List */}
+        <div className="lg:w-3/4 overflow-x-scroll h-170">
+          {filteredProducts?.length === 0 ? (
+            <div className="text-center text-gray-600 text-lg mt-20">
+              No products found with the current filters.
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
+              {filteredProducts.map((product) => (
+                <Item key={product._id} product={product} />
               ))}
             </div>
-          </div>
+          )}
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

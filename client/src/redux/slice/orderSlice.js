@@ -9,7 +9,7 @@ const apiurl = import.meta.env.VITE_BACKEND_URL;
 // ✅ Fetch all orders (admin only)
 export const fetchAllOrders = createAsyncThunk("order/fetchAllOrders", async (_, thunkAPI) => {
   try {
-    const res = await axios.get(`${apiurl}/api/order/allorders`);
+    const res = await axios.get(`${apiurl}/api/orders/allorders`);
     return res.data.orders;
   } catch (err) {
     return thunkAPI.rejectWithValue(err.response.data);
@@ -19,7 +19,7 @@ export const fetchAllOrders = createAsyncThunk("order/fetchAllOrders", async (_,
 // ✅ Fetch user orders
 export const fetchUserOrders = createAsyncThunk("order/fetchUserOrders", async (_, thunkAPI) => {
   try {
-    const res = await axios.get(`${apiurl}/api/order/user-orders`);
+    const res = await axios.get(`${apiurl}/api/orders/user-orders`);
     return res.data.orders;
   } catch (err) {
     return thunkAPI.rejectWithValue(err.response.data);
@@ -61,6 +61,8 @@ const orderSlice = createSlice({
   initialState: {
     allOrders: [],
     userOrders: [],
+    totalRevenue:0,
+    totalspent:0,
     singleOrder: null,
     loading: false,
     error: null,
@@ -76,6 +78,7 @@ const orderSlice = createSlice({
       .addCase(fetchAllOrders.fulfilled, (state, action) => {
         state.loading = false;
         state.allOrders = action.payload;
+         state.totalRevenue = action.payload.reduce((acc, order) => acc + order.totalamount, 0);
       })
       .addCase(fetchAllOrders.rejected, (state, action) => {
         state.loading = false;
@@ -89,6 +92,8 @@ const orderSlice = createSlice({
       .addCase(fetchUserOrders.fulfilled, (state, action) => {
         state.loading = false;
         state.userOrders = action.payload;
+         state.totalspent = action.payload.reduce((acc, order) => acc + order.totalamount, 0);
+
       })
       .addCase(fetchUserOrders.rejected, (state, action) => {
         state.loading = false;

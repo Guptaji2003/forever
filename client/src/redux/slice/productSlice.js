@@ -4,6 +4,7 @@ import axios from "axios";
 
 // Base API
 const BASE_URL = import.meta.env.VITE_BACKEND_URL;
+axios.defaults.withCredentials = true;
 
 // ================== ASYNC THUNKS ==================
 
@@ -62,13 +63,13 @@ export const fetchNewArrivals = createAsyncThunk(
   }
 );
 
-export const filterProductsByQuery = createAsyncThunk(
-  "product/filter",
-  async (query) => {
-    const res = await axios.get(`${BASE_URL}/api/products?${query}`);
-    return res.data;
-  }
-);
+// export const filterProductsByQuery = createAsyncThunk(
+//   "product/filter",
+//   async (query) => {
+//     const res = await axios.get(`${BASE_URL}/api/products?${query}`);
+//     return res.data;
+//   }
+// );
 
 export const fetchSingleProduct = createAsyncThunk(
   "product/fetchSingle",
@@ -99,6 +100,33 @@ export const fetchRelatedProducts = createAsyncThunk(
     console.log(res.data);
     console.log("====================================");
     return res.data.products;
+  }
+);
+
+export const filterProducts = createAsyncThunk(
+  "products/filterProducts",
+  async ({ category, minprice, maxprice, search, sort }, thunkAPI) => {
+    try {
+      const queryParams = new URLSearchParams();
+
+      if (category) queryParams.append("category", category);
+      if (minprice) queryParams.append("minprice", minprice);
+      if (maxprice) queryParams.append("maxprice", maxprice);
+      if (search) queryParams.append("search", search);
+      if (sort) queryParams.append("sort", sort);
+
+      const res = await axios.get(
+        `${BASE_URL}/api/products/filter?${queryParams.toString()}`
+      );
+console.log('====================================');
+console.log(res.data.products);
+console.log('====================================');
+      return res.data.products;
+    } catch (err) {
+      return thunkAPI.rejectWithValue(
+        err.response?.data?.message || "Failed to fetch filtered products"
+      );
+    }
   }
 );
 
@@ -162,10 +190,6 @@ const productSlice = createSlice({
         state.newArrivals = action.payload;
       })
 
-      // Filtered Products
-      .addCase(filterProductsByQuery.fulfilled, (state, action) => {
-        state.filteredProducts = action.payload;
-      })
       // Single product fetched
       .addCase(fetchSingleProduct.pending, (state, action) => {
         state.loading = true;
@@ -188,6 +212,18 @@ const productSlice = createSlice({
         state.loading = false;
       })
       .addCase(fetchRelatedProducts.rejected, (state, action) => {
+        state.error = action.payload;
+        state.loading = false;
+      })
+      //filter
+       .addCase(filterProducts.pending, (state, action) => {
+        state.loading = true;
+      })
+      .addCase(filterProducts.fulfilled, (state, action) => {
+        state.filteredProducts = action.payload;
+        state.loading = false;
+      })
+      .addCase(filterProducts.rejected, (state, action) => {
         state.error = action.payload;
         state.loading = false;
       });

@@ -1,134 +1,102 @@
-import React, { useEffect, useState } from "react";
-import { toast } from "react-toastify";
-import axios from "axios";
-// import GetAllOrders from "../../hooks/GetAllOrders";
-import { useSelector } from "react-redux";
+import React from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchAllOrders } from "../../redux/slice/orderSlice";
 const AdminOrders = () => {
-  const orders = [
-    {
-      id: "001",
-      customer: "John Doe",
-      items: [
-        { name: "T-Shirt", size: "M", color: "Red", quantity: 2, price: "$30" },
-        { name: "Jeans", size: "L", color: "Blue", quantity: 1, price: "$90" },
-      ],
-      totalAmount: "$120",
-      status: "Pending",
-    },
-    {
-      id: "002",
-      customer: "Jane Smith",
-      items: [
-        {
-          name: "Jacket",
-          size: "XL",
-          color: "Black",
-          quantity: 1,
-          price: "$250",
-        },
-      ],
-      totalAmount: "$250",
-      status: "Shipped",
-    },
-    {
-      id: "003",
-      customer: "Mike Johnson",
-      items: [
-        { name: "Shirt", size: "L", color: "White", quantity: 3, price: "$25" },
-      ],
-      totalAmount: "$75",
-      status: "Delivered",
-    },
-  ];
-
-  // const { orders } = useSelector((store) => store.order);
-
+  const { allOrders } = useSelector((store) => store.order);
+  console.log('====================================');
+  console.log(allOrders);
+  console.log('====================================');
+  const dispatch = useDispatch();
+  // React.useEffect(() => {
+  //   dispatch(fetchAllOrders());
+  // }, [dispatch]);
   return (
     <>
-      <div>
-        <div className="h-screen bg-gray-100 p-6 flex flex-col">
-          <h2 className="text-3xl font-bold text-gray-800 mb-6">Orders</h2>
-          <div className="grid w-300 grid-cols-1 gap-6 overflow-auto">
-            {orders.map((order, index) => (
-              <div
-                key={index}
-                className="bg-white shadow-lg rounded-xl p-6 transition-transform transform hover:scale-[1.02]"
-              >
-                <div className="flex justify-between items-center border-b pb-3">
-                  <div>
-                    <p className="text-lg font-semibold">
-                      Order ID:{" "}
-                      <span className="text-gray-700">{order.id}</span>
-                    </p>
-                    <p className="text-lg font-semibold">
-                      Customer:{" "}
-                      {/* <span className="text-gray-700">{order.userId._id}</span> */}
-                    </p>
-                    <p className="text-lg font-semibold">
-                      Total:{" "}
-                      {/* <span className="text-green-600">{order.userId.email}</span> */}
-                    </p>
-                    {/* <p className="text-lg font-semibold">
-                  Status:
-                  <span
-                    className={`ml-2 px-3 py-1 rounded text-white ${
-                      order.status === "Pending"
-                        ? "bg-yellow-500"
-                        : order.status === "Shipped"
-                        ? "bg-blue-500"
-                        : "bg-green-500"
-                    }`}
-                  >
-                    {order.status}
-                  </span>
-                </p> */}
-                  </div>
-                  <div className="space-x-3">
-                    <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
-                      View
-                    </button>
-                    <button className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700">
-                      Cancel
-                    </button>
-                  </div>
-                </div>
-                <div className="mt-4">
-                  <h3 className="text-lg font-semibold mb-3">Ordered Items</h3>
-                  <table className="w-full border rounded-lg overflow-hidden shadow-md">
-                    <thead>
-                      <tr className="bg-gray-300 text-gray-700">
-                        <th className="p-3">Item</th>
-                        <th className="p-3">Size</th>
-                        <th className="p-3">Color</th>
-                        <th className="p-3">Quantity</th>
-                        <th className="p-3">Price</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {order.items.map((item, i) => (
-                        <tr
-                          key={i}
-                          className="text-center border-t bg-gray-50 hover:bg-gray-100"
-                        >
-                          <td className="p-3">{item.name}</td>
-                          <td className="p-3"></td>
-                          <td className="p-3">
-                            <span className="px-3 py-1 rounded-lg text-white">
-                              {item.color}
-                            </span>
-                          </td>
-                          <td className="p-3"></td>
-                          <td className="p-3">{item.price}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            ))}
+   <div className="max-w-7xl mx-auto p-6">
+  <h2 className="text-4xl font-bold text-gray-800 mb-10">📦 User Orders</h2>
+
+  <div className="space-y-10 max-h-[600px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100 pr-2">
+    {allOrders.map((order) => (
+      <div key={order._id} className="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
+        
+        {/* Header: User & Order Info */}
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-4">
+          <div>
+            <h3 className="text-xl font-semibold text-gray-800">Order ID: #{order._id.slice(-6)}</h3>
+            <p className="text-sm text-gray-500">Placed on: {new Date(order.createdAt).toLocaleString()}</p>
+            <p className="text-sm text-gray-500 mt-1">
+              Payment: {order.isPaid ? "✅ Paid" : "❌ Not Paid"} | Method: {order.paymentmethod}
+            </p>
+            <p className="text-sm text-gray-500 mt-1">👤 User: {order.userId?.name || "N/A"} | 📧 {order.userId?.email || "N/A"}</p>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-2 mt-2 md:mt-0">
+            <span
+              className={`px-4 py-1 rounded-full text-sm font-semibold uppercase ${
+                order.status === "delivered"
+                  ? "bg-green-600 text-white"
+                  : order.status === "shipped"
+                  ? "bg-blue-500 text-white"
+                  : order.status === "processing"
+                  ? "bg-yellow-500 text-white"
+                  : "bg-red-500 text-white"
+              }`}
+            >
+              {order.status}
+            </span>
+            {order.isDelivered && (
+              <span className="text-xs text-gray-500">Delivered on: {new Date(order.deliveredAt).toLocaleDateString()}</span>
+            )}
           </div>
         </div>
+
+        {/* Product Table */}
+        <div className="overflow-x-auto rounded-lg border border-gray-100">
+          <table className="min-w-full text-sm text-left">
+            <thead className="bg-gray-100 text-gray-600 uppercase tracking-wider">
+              <tr>
+                <th className="px-4 py-3">Image</th>
+                <th className="px-4 py-3">Item</th>
+                <th className="px-4 py-3">Color</th>
+                <th className="px-4 py-3">Size</th>
+                <th className="px-4 py-3">Qty</th>
+                <th className="px-4 py-3">Price</th>
+              </tr>
+            </thead>
+            <tbody>
+              {order.products.map((item, index) => (
+                <tr key={index} className="border-t hover:bg-gray-50">
+                  <td className="px-4 py-3">
+                    <img
+                      src={item.image[0]?.url}
+                      alt={item.image[0]?.alttext || "product"}
+                      className="w-16 h-16 rounded-md object-cover border"
+                    />
+                  </td>
+                  <td className="px-4 py-3 text-gray-800 font-medium">{item.name}</td>
+                  <td className="px-4 py-3 capitalize">{item.color || "N/A"}</td>
+                  <td className="px-4 py-3 uppercase">{item.size || "N/A"}</td>
+                  <td className="px-4 py-3">{item.quantity}</td>
+                  <td className="px-4 py-3">₹{item.price}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        {/* Footer: Shipping Address + Total */}
+        <div className="mt-4 flex flex-col md:flex-row justify-between items-start md:items-center gap-2">
+          <div className="text-sm text-gray-600">
+            <p className="font-semibold text-gray-700 mb-1">📍 Shipping Address:</p>
+            <p>{order.shippingaddress.address}, {order.shippingaddress.city}, {order.shippingaddress.state} - {order.shippingaddress.postalcode}</p>
+          </div>
+          <div className="text-lg font-bold text-gray-800">Total: ₹{order.totalamount}</div>
+        </div>
       </div>
+    ))}
+  </div>
+</div>
+
     </>
   );
 };

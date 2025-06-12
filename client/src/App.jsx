@@ -16,17 +16,24 @@ import UserDashBoard from "./pages/user/UserDashBoard";
 import UserOrders from "./pages/user/UserOrders";
 import UserWishlist from "./pages/user/UserWishlist";
 import UserHome from "./pages/user/UserHome";
-import EditProfile from "./pages/user/EditProfile";
 import Signup from "./pages/Signup";
 import AdminCreateProduct from "./pages/admin/AdminCreateProduct";
 import { useDispatch } from "react-redux";
 import { fetchAllProducts } from "./redux/slice/productSlice";
+import { fetchAllOrders, fetchUserOrders } from "./redux/slice/orderSlice";
+import { AllUser } from "./redux/slice/authSlice";
+import { fetchUserCart } from "./redux/slice/cartSlice";
+import Pagenotfound from "./pages/Pagenotfound";
 // import { checkAuth } from "./redux/slice/authSlice";
 
 const App = () => {
   const dispatch = useDispatch();
   React.useEffect(() => {
     dispatch(fetchAllProducts());
+    dispatch(fetchAllOrders());
+    dispatch(fetchUserOrders());
+    dispatch(AllUser());
+    dispatch(fetchUserCart());
   }, [dispatch]);
 
   return (
@@ -37,9 +44,10 @@ const App = () => {
         <Route path="/category/:name" element={<Men />} />
         <Route path="/product/:id" element={<ProductDetail />} />
         <Route path="/collection" element={<Collection />} />
-        {/* <Route path="/cart" element={<Cart />} /> */}
+        <Route path="/cart" element={<Cart />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
+        <Route path="*" element={<Pagenotfound />} />
         <Route path="/admin" element={<AdminDashboard />}>
           <Route path="dashboard" element={<AdminHome />} />
           <Route path="create" element={<AdminCreateProduct />} />
@@ -50,7 +58,6 @@ const App = () => {
           <Route path="profile" element={<UserHome />} />
           <Route path="orders" element={<UserOrders />} />
           <Route path="wishlist" element={<UserWishlist />} />
-          <Route path="edit" element={<EditProfile />} />
         </Route>
       </Routes>
       <Footer />
