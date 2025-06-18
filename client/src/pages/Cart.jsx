@@ -2,9 +2,14 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { removeCartItem, updateCart } from "../redux/slice/cartSlice";
+import {
+  clearCartState,
+  removeCartItem,
+  updateCart,
+} from "../redux/slice/cartSlice";
 import { Link } from "react-router-dom";
 import { ShoppingCart } from "lucide-react";
+import { createCheckout } from "../redux/slice/checkoutSlice";
 const Cart = () => {
   const dispatch = useDispatch();
 
@@ -14,37 +19,63 @@ const Cart = () => {
   return (
     <div>
       <div className="max-w-screen-xl mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold text-gray-800 mb-6">Shopping Cart</h1>
+        <h1 className="text-3xl font-bold w-200 text-gray-800 mb-6 flex justify-between">
+          Shopping Cart{" "}
+          <span
+            onClick={() => dispatch(clearCartState())}
+            className="border font-light p-1 text-xl bg-green-500 rounded "
+          >
+            clear cart
+          </span>
+        </h1>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="w-full max-h-[500px] overflow-y-scroll lg:col-span-2">
             {cart?.products?.map((product) => (
               <div
                 key={product.productId}
-                className="border rounded-lg p-4 mb-4 flex items-center justify-between shadow-md"
+                className="bg-white border border-gray-200 rounded-2xl p-5 mb-6 flex flex-col md:flex-row items-start md:items-center justify-between shadow-lg transition hover:shadow-xl duration-300"
               >
-                <div className="flex items-center">
+                {/* Product Image and Details */}
+                <div className="flex items-start md:items-center">
                   <img
                     src={product?.image?.[0]?.url}
-                    alt={product.image[0]?.alttext || "Product Image"}
-                    className="w-20 h-20 rounded-lg object-cover"
+                    alt={product.image?.[0]?.alttext || "Product Image"}
+                    className="w-24 h-24 md:w-28 md:h-28 rounded-xl object-cover ring-1 ring-gray-200 shadow-sm"
                   />
-                  <div className="ml-4">
-                    <h2 className="text-lg font-medium text-gray-800">
+                  <div className="ml-5 space-y-1">
+                    <h2 className="text-xl font-semibold text-gray-800">
                       {product.name}
                     </h2>
-                    <p className="text-gray-600 text-sm">
+                    <p className="text-sm text-gray-500">
                       Category: {product.category}
                     </p>
-                    <p className="text-gray-600 text-sm">
+                    <p className="text-sm text-gray-500">
                       Price: ₹{product.price}
                     </p>
+                    <div className="flex items-center space-x-4 mt-1">
+                      {product?.color && (
+                        <span className="flex items-center text-sm">
+                          Color:
+                          <span
+                            className="ml-1 w-4 h-4 rounded-full border border-gray-300"
+                            style={{ backgroundColor: product.color }}
+                          ></span>
+                        </span>
+                      )}
+                      {product?.size && (
+                        <span className="text-sm text-gray-500">
+                          Size: {product.size}
+                        </span>
+                      )}
+                    </div>
                   </div>
                 </div>
 
-                <div className="flex items-center space-x-4">
-                  <div className="flex items-center border rounded-lg">
+                {/* Quantity Controls & Remove Button */}
+                <div className="mt-4 md:mt-0 flex flex-col items-end space-y-3">
+                  <div className="flex items-center bg-gray-100 rounded-lg overflow-hidden">
                     <button
-                      className="px-3 py-1 text-gray-700 hover:text-white hover:bg-gray-600 rounded-l-lg"
+                      className="px-3 py-1 bg-gray-200 hover:bg-gray-300 text-lg font-bold"
                       onClick={() =>
                         dispatch(
                           updateCart({
@@ -54,11 +85,13 @@ const Cart = () => {
                         )
                       }
                     >
-                      -
+                      −
                     </button>
-                    <span className="w-12 text-center">{product.quantity}</span>
+                    <span className="px-5 text-center font-medium text-gray-700 bg-white">
+                      {product.quantity}
+                    </span>
                     <button
-                      className="px-3 py-1 text-gray-700 hover:text-white hover:bg-gray-600 rounded-r-lg"
+                      className="px-3 py-1 bg-gray-200 hover:bg-gray-300 text-lg font-bold"
                       onClick={() =>
                         dispatch(
                           updateCart({
@@ -71,12 +104,11 @@ const Cart = () => {
                       +
                     </button>
                   </div>
-
                   <button
-                    className="text-red-600 hover:text-red-800 font-medium"
+                    className="text-sm font-medium text-red-500 hover:text-red-700 underline"
                     onClick={() => dispatch(removeCartItem(product?.productId))}
                   >
-                    Remove
+                    Remove Item
                   </button>
                 </div>
               </div>
@@ -99,12 +131,23 @@ const Cart = () => {
                 <p>Total</p>
                 <p>₹{cart?.totalcartamount + shippingCharge}</p>
               </div>
-              <button
-                // onClick={placeOrder}
-                className="w-full px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700"
-              >
-                Checkout
-              </button>
+              <Link to={"/checkout"}>
+                <button
+                  onClick={() =>
+                    dispatch(
+                      createCheckout({
+                        products: cart.products,
+                        shippingaddress: cart.shippingaddress,
+                        totalamount: cart.totalamount,
+                        paymentmethod: cart.paymentmethod,
+                      })
+                    )
+                  }
+                  className="w-full px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700"
+                >
+                  Checkout
+                </button>
+              </Link>
             </div>
           )) || (
             <div className="min-h-[60vh] flex flex-col justify-center items-center text-center px-4">

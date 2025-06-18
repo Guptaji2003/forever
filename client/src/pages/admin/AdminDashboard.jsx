@@ -43,6 +43,12 @@ const AdminDashboard = () => {
           >
             Users
           </a>
+           <a
+            href="/admin/products"
+            className="block p-2 hover:bg-blue-700 rounded"
+          >
+            All Products
+          </a>
           {/* <a href="#" className="block p-2 hover:bg-blue-700 rounded">Outlets</a> */}
         </nav>
       </div>

@@ -22,6 +22,11 @@ const ProductDetail = () => {
   }, [dispatch, id]);
 
   const [quantity, setQuantity] = useState(1);
+  const [color, setcolor] = useState('');
+  const [size, setsize] = useState('')
+  console.log('====================================');
+  console.log(color);
+  console.log('====================================');
 
   const increaseQty = () => setQuantity((prev) => prev + 1);
   const decreaseQty = () => setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
@@ -86,6 +91,7 @@ const ProductDetail = () => {
                 {singleProduct?.color?.map((clr, idx) => (
                   <span
                     key={idx}
+                    onClick={()=>setcolor(clr)}
                     className={`w-6 h-6 rounded-full border-2 border-gray-300`}
                     style={{ backgroundColor: clr }}
                     title={clr}
@@ -103,6 +109,7 @@ const ProductDetail = () => {
                 {singleProduct?.size?.map((sz, idx) => (
                   <span
                     key={idx}
+                    onClick={()=>setsize(sz)}
                     className="px-3 py-1 bg-gray-200 text-sm rounded-md font-semibold"
                   >
                     {sz}
@@ -112,9 +119,17 @@ const ProductDetail = () => {
             </div>
 
             <button
-              onClick={() =>
-                dispatch(addToCart({ productId: singleProduct._id, quantity }))
-              }
+              onClick={() => {
+                dispatch(
+                  addToCart({
+                    productId: singleProduct._id,
+                    quantity: quantity,
+                    color: color,
+                    size: size,
+                  })
+                );
+                setQuantity(1);
+              }}
               className="mt-4 w-full lg:w-auto px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white text-lg font-semibold rounded-xl shadow-lg hover:shadow-xl hover:scale-105 transform transition-all duration-300"
             >
               Add to Cart

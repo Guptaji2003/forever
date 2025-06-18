@@ -82,13 +82,15 @@ router.post("/login", async (req, res) => {
 });
 router.put("/updateprofile", isAuthenticated, async (req, res) => {
   try {
-    
+    const { name } = req.body;
     const userId = req.user._id;
     const user = await usermodel.findById(userId).select("-password");
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
+    if (name) user.name = name;
+    await user.save();
 
     res.status(200).json(user);
   } catch (error) {
@@ -96,11 +98,36 @@ router.put("/updateprofile", isAuthenticated, async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 });
+router.put(
+  "/adminupdateuser/:id",
+  isAuthenticated,
+  isAdmin,
+  async (req, res) => {
+    try {
+      const user = await usermodel.findById(req.params.id);
 
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      if (user.role == "user") {
+        user.role = "admin";
+      } else {
+        user.role = "user";
+      }
+      await user.save();
 
+      res.status(200).json(user);
+    } catch (error) {
+      console.error("Error fetching user:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  }
+);
 router.get("/alluser", isAuthenticated, isAdmin, async (req, res) => {
   try {
-    const users = await usermodel.find({ _id: { $ne: req.user._id } });
+    const users = await usermodel
+      .find({ _id: { $ne: req.user._id } })
+      .sort({ role: 1 });
     res.json({ success: true, message: "all users", users });
   } catch (error) {
     console.error("Error fetching user:", error);

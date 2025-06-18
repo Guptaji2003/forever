@@ -6,27 +6,30 @@ const cartmodel = require("../Models/cartmodel");
 const checkoutmodel = require("../Models/checkoutmodel");
 const ordermodel = require("../Models/ordermodel");
 
-router.get("/", isAuthenticated, async (req, res) => {
-  try {
-    const userId = req.user._id;
-    const cart = await cartmodel.find({ userId: userId });
-    if (!cart) return res.status(400).send({ message: "no cart found" });
+// Optional: PhonePe integration logic
+const { initiatePhonePePayment } = require("../utils/phonepe"); // create this util
 
-    return res.status(200).json({
-      cart,
-      success: true,
-    });
-  } catch (error) {
-    console.log(error);
-  }
-});
+// 1️⃣ Create Checkout Route
 router.post("/create-checkout", isAuthenticated, async (req, res) => {
   try {
     const { products, shippingaddress, totalamount, paymentmethod } = req.body;
     const userId = req.user._id;
-    if (!products || products.length == 0) {
-      return res.status(400).json({ messgae: "no products for checkout" });
+
+    if (!products || products.length === 0) {
+      return res.status(400).json({ message: "No products for checkout" });
     }
+
+    if (
+      !shippingaddress ||
+      !shippingaddress.city ||
+      !shippingaddress.address ||
+      !shippingaddress.postalcode ||
+      !shippingaddress.state
+    ) {
+      return res.status(400).json({ message: "Incomplete shipping address" });
+    }
+
+    // Create checkout entry
     const checkout = await checkoutmodel.create({
       userId,
       products,
@@ -34,42 +37,62 @@ router.post("/create-checkout", isAuthenticated, async (req, res) => {
       totalamount,
       paymentmethod,
     });
-    await checkout.save();
+
+    // Handle PhonePe payment
+    if (paymentmethod === "PhonePe") {
+      const redirectUrl = await initiatePhonePePayment(checkout._id, totalamount, userId);
+      return res.status(200).json({
+        checkout,
+        success: true,
+        paymentInitiated: true,
+        redirectUrl,
+      });
+    }
+
+    // For UPI/COD, no redirection needed
     return res.status(200).json({
       checkout,
       success: true,
     });
   } catch (error) {
-    console.log(error);
+    console.error("Checkout creation error:", error);
+    return res.status(500).json({
+      message: "Internal server error",
+      error: error.message,
+    });
   }
 });
+
+// 2️⃣ Update Checkout (after payment)
 router.put("/update-checkout/:id", isAuthenticated, async (req, res) => {
   try {
     const { paymentStatus, paymentDetails } = req.body;
-    const checkout = await checkoutmodel.findById({ _id: req.params.id });
-    if (!checkout) return res.status(404).json({ error: "checkout not found" });
+    const checkout = await checkoutmodel.findById(req.params.id);
+    if (!checkout) return res.status(404).json({ error: "Checkout not found" });
+
     if (paymentStatus === "paid") {
       checkout.isPaid = true;
       checkout.paymentStatus = paymentStatus;
       checkout.paymentDetails = paymentDetails;
       checkout.paidAt = Date.now();
-      checkout.save();
-      return res.status(200).json({
-        checkout,
-        success: true,
-      });
+      await checkout.save();
+
+      return res.status(200).json({ checkout, success: true });
     } else {
-      return res.status(200).json({ message: "not paid yet" });
+      return res.status(200).json({ message: "Not paid yet" });
     }
   } catch (error) {
     console.log(error);
+    res.status(500).json({ error: error.message });
   }
 });
 
+// 3️⃣ Finalize Checkout (create order + clear cart)
 router.post("/final-checkout/:id", isAuthenticated, async (req, res) => {
   try {
-    const checkout = await checkoutmodel.findById({ _id: req.params.id });
-    if (!checkout) return res.status(404).json({ error: "checkout not found" });
+    const checkout = await checkoutmodel.findById(req.params.id);
+    if (!checkout) return res.status(404).json({ error: "Checkout not found" });
+
     if (checkout.isPaid && !checkout.isFinalized) {
       const finalorder = await ordermodel.create({
         userId: checkout.userId,
@@ -83,63 +106,25 @@ router.post("/final-checkout/:id", isAuthenticated, async (req, res) => {
         paidAt: checkout.paidAt,
         paymentDetails: checkout.paymentDetails,
       });
+
       checkout.isFinalized = true;
       checkout.finalizedAt = Date.now();
-      checkout.save();
+      await checkout.save();
+
       await cartmodel.findOneAndDelete({ userId: checkout.userId });
+
       return res.status(200).json({
         finalorder,
         success: true,
       });
     } else if (checkout.isFinalized) {
-      return res.status(200).json({ message: "already finalized" });
+      return res.status(200).json({ message: "Already finalized" });
     } else {
-      return res.status(200).json({ message: "not paid" });
+      return res.status(200).json({ message: "Not paid yet" });
     }
   } catch (error) {
     console.log(error);
-  }
-});
-
-router.delete("/removecartitem", isAuthenticated, async (req, res) => {
-  try {
-    const { productId } = req.body; // Use body for DELETE
-    const userId = req.user._id;
-
-    const cart = await cartmodel.findOne({ userId });
-    if (!cart) return res.status(404).json({ message: "Cart not found" });
-
-    const index = cart.products.findIndex(
-      (item) => item.productId.toString() === productId
-    );
-
-    if (index === -1) {
-      return res.status(404).json({ message: "Product not found in cart" });
-    }
-
-    cart.products.splice(index, 1);
-
-    // Recalculate total price
-    let totalprice = 0;
-    for (let item of cart.products) {
-      const product = await productmodel.findById(item.productId);
-      if (product) {
-        totalprice += product.price * item.quantity;
-      }
-    }
-
-    cart.totalcartamount = totalprice;
-
-    await cart.save();
-
-    return res.status(200).json({
-      message: "Product removed from cart",
-      cart,
-      success: true,
-    });
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({ error: "Internal server error" });
+    res.status(500).json({ error: error.message });
   }
 });
 

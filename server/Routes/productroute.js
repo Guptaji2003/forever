@@ -5,7 +5,7 @@ const { isAuthenticated, isAdmin } = require("../Middleware/isAuthenticated");
 
 router.get("/allproduct", isAuthenticated, async (req, res) => {
   try {
-    const products = await productmodel.find();
+    const products = await productmodel.find().sort({created:-1});
     return res.status(200).json({
       products,
       success: true,
@@ -35,6 +35,7 @@ router.post("/createproduct", isAuthenticated, isAdmin, async (req, res) => {
   });
 });
 router.put("/updateproduct/:id", isAuthenticated, isAdmin, async (req, res) => {
+  try {
   const productId = req.params.id;
   const { name, price, image, category, description, size, color } = req.body;
   const product = await productmodel.findById(productId);
@@ -47,6 +48,9 @@ router.put("/updateproduct/:id", isAuthenticated, isAdmin, async (req, res) => {
   if (size) product.size = size;
   await product.save();
   return res.status(401).json({ message: "updated this product", product });
+  } catch (err) {
+    console.log(err);
+  }
 });
 router.delete("/deleteproduct/:id", isAuthenticated, isAdmin, async (req, res) => {
   try {

@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 axios.defaults.withCredentials = true;
 const apiurl = import.meta.env.VITE_BACKEND_URL;
@@ -23,13 +24,16 @@ export const fetchUserCart = createAsyncThunk(
 // ➕ Add to Cart
 export const addToCart = createAsyncThunk(
   "cart/addToCart",
-  async ({ productId, quantity }, thunkAPI) => {
+  async ({ productId, quantity,color,size }, thunkAPI) => {
     try {
       console.log(productId, quantity);
       const res = await axios.post(`${apiurl}/api/carts/addtocart`, {
         productId,
         quantity,
+        color,
+        size
       });
+    toast.success("Product added to cart")
      console.log('====================================');
      console.log(res.data.cart);
      console.log('====================================');

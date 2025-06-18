@@ -24,6 +24,9 @@ import { fetchAllOrders, fetchUserOrders } from "./redux/slice/orderSlice";
 import { AllUser } from "./redux/slice/authSlice";
 import { fetchUserCart } from "./redux/slice/cartSlice";
 import Pagenotfound from "./pages/Pagenotfound";
+import AdminAllProducts from "./pages/admin/AdminAllProducts";
+import AdminUpdateProduct from "./pages/admin/AdminUpdateProduct";
+import Checkout from "./pages/Checkout";
 // import { checkAuth } from "./redux/slice/authSlice";
 
 const App = () => {
@@ -47,12 +50,15 @@ const App = () => {
         <Route path="/cart" element={<Cart />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
+        <Route path="/checkout" element={<Checkout />} />
         <Route path="*" element={<Pagenotfound />} />
         <Route path="/admin" element={<AdminDashboard />}>
           <Route path="dashboard" element={<AdminHome />} />
           <Route path="create" element={<AdminCreateProduct />} />
           <Route path="orders" element={<AdminOrders />} />
           <Route path="users" element={<AdminUsers />} />
+          <Route path="products" element={<AdminAllProducts />} />
+          <Route path="updateproduct/:id" element={<AdminUpdateProduct />} />
         </Route>
         <Route path="/user" element={<UserDashBoard />}>
           <Route path="profile" element={<UserHome />} />

@@ -43,12 +43,42 @@ export const registerUser = createAsyncThunk(
   }
 );
 
-export const AllUser = createAsyncThunk(
-  "auth/allUser",
-  async (_, thunkAPI) => {
+export const AllUser = createAsyncThunk("auth/allUser", async (_, thunkAPI) => {
+  try {
+    const res = await axios.get(`${apiurl}/api/users/alluser`);
+    return res.data.users;
+  } catch (err) {
+    return thunkAPI.rejectWithValue(
+      err.response.data.message || "all user failed"
+    );
+  }
+});
+
+export const AdminUpdateUser = createAsyncThunk(
+  "auth/adminupdateuser",
+  async (id, thunkAPI) => {
     try {
-      const res = await axios.get(`${apiurl}/api/users/alluser`);
-      return res.data.users;
+      console.log("====================================");
+      console.log(id);
+      console.log("====================================");
+      const res = await axios.put(`${apiurl}/api/users/adminupdateuser/${id}`);
+      return res.data;
+    } catch (err) {
+      return thunkAPI.rejectWithValue(
+        err.response.data.message || "all user failed"
+      );
+    }
+  }
+);
+
+export const UpdateProfile = createAsyncThunk(
+  "auth/updateprofile",
+  async (data, thunkAPI) => {
+    try {
+      const res = await axios.put(`${apiurl}/api/users/updateprofile`, {
+        name: data,
+      });
+      return res.data;
     } catch (err) {
       return thunkAPI.rejectWithValue(
         err.response.data.message || "all user failed"
@@ -88,7 +118,7 @@ const authSlice = createSlice({
   name: "auth",
   initialState: {
     user: userfromstorage,
-    alluser:[],
+    alluser: [],
     isAuthenticated: false,
     loading: false,
     error: null,
@@ -127,8 +157,8 @@ const authSlice = createSlice({
       //   state.isAuthenticated = false;
       // })
 
-       // alluser
-        .addCase(AllUser.pending, (state) => {
+      // alluser
+      .addCase(AllUser.pending, (state) => {
         state.loading = true;
       })
       .addCase(AllUser.fulfilled, (state, action) => {
@@ -140,7 +170,7 @@ const authSlice = createSlice({
       .addCase(AllUser.rejected, (state) => {
         state.alluser = null;
         // state.isAuthenticated = false;
-         state.error = action.payload;
+        state.error = action.payload;
         state.loading = false;
       })
 
@@ -148,6 +178,20 @@ const authSlice = createSlice({
       .addCase(logoutUser.fulfilled, (state) => {
         state.user = null;
         state.isAuthenticated = false;
+      })
+
+      .addCase(UpdateProfile.fulfilled, (state, action) => {
+        state.user = action.payload;
+        state.isAuthenticated = true;
+      })
+
+      .addCase(AdminUpdateUser.fulfilled, (state, action) => {
+        const user = state.alluser.find(
+          (item) => item._id === action.payload._id
+        );
+        if (user) {
+          user.role = action.payload.role;
+        }
       });
   },
 });

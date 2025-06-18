@@ -1,6 +1,7 @@
 // src/redux/slice/productSlice.js
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 // Base API
 const BASE_URL = import.meta.env.VITE_BACKEND_URL;
@@ -35,8 +36,14 @@ export const updateProduct = createAsyncThunk(
   "product/update",
   async ({ id, updates }, thunkAPI) => {
     try {
-      const res = await axios.put(`${BASE_URL}/api/products/${id}`, updates);
-      return res.data;
+      console.log('====================================');
+      console.log(id,updates);
+      console.log('====================================');
+      const res = await axios.put(`${BASE_URL}/api/products/updateproduct/${id}`, updates);
+      console.log('====================================');
+      console.log(res.data.product);
+      console.log('====================================');
+      // return res.data.product;
     } catch (err) {
       return thunkAPI.rejectWithValue(err.response.data);
     }
@@ -47,7 +54,7 @@ export const deleteProduct = createAsyncThunk(
   "product/delete",
   async (id, thunkAPI) => {
     try {
-      await axios.delete(`${BASE_URL}/api/products/${id}`);
+      await axios.delete(`${BASE_URL}/api/products/deleteproduct/${id}`);
       return id;
     } catch (err) {
       return thunkAPI.rejectWithValue(err.response.data);
@@ -136,6 +143,7 @@ const productSlice = createSlice({
   name: "product",
   initialState: {
     allProducts: [],
+    totalProduct:0,
     singleProduct: null,
     newArrivals: [],
     filteredProducts: [],
@@ -157,6 +165,7 @@ const productSlice = createSlice({
       .addCase(fetchAllProducts.fulfilled, (state, action) => {
         state.loading = false;
         state.allProducts = action.payload;
+        state.totalProduct=action.payload.length;
       })
       .addCase(fetchAllProducts.rejected, (state, action) => {
         state.loading = false;
@@ -169,14 +178,14 @@ const productSlice = createSlice({
       })
 
       // Update Product
-      .addCase(updateProduct.fulfilled, (state, action) => {
-        const index = state.allProducts.findIndex(
-          (p) => p._id === action.payload._id
-        );
-        if (index !== -1) {
-          state.allProducts[index] = action.payload;
-        }
-      })
+      // .addCase(updateProduct.fulfilled, (state, action) => {
+      //   const index = state.allProducts.findIndex(
+      //     (p) => p._id === action.payload._id
+      //   );
+      //   if (index !== -1) {
+      //     state.allProducts[index] = action.payload;
+      //   }
+      // })
 
       // Delete Product
       .addCase(deleteProduct.fulfilled, (state, action) => {

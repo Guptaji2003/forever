@@ -20,7 +20,7 @@ router.get("/usercart", isAuthenticated, async (req, res) => {
 });
 router.post("/addtocart", isAuthenticated, async (req, res) => {
   try {
-    const { productId, quantity } = req.body;
+    const { productId, quantity,color,size } = req.body;
     const product = await productmodel.findById(productId);
     if (!product) return res.status(404).json({ error: "Product not found" });
     const userId = req.user._id;
@@ -43,8 +43,11 @@ router.post("/addtocart", isAuthenticated, async (req, res) => {
       cart.products.push({
         productId: product._id,
         name: product.name,
+        image: product.image,
         description: product.description,
         category: product.category,
+        color: color,
+        size: size,
         price: product.price,
         quantity,
       });
