@@ -1,26 +1,30 @@
-import React, { useState } from "react";
-import ResultProducts from "./ResultProducts";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import ResultProducts from "./ResultProducts";
 import { fetchNewArrivals } from "../redux/slice/productSlice";
 
 const NewArrival = () => {
-  const {newArrivals } = useSelector((store) => store.product);
   const dispatch = useDispatch();
-  React.useEffect(() => {
+  const { newArrivals } = useSelector((store) => store.product);
+
+  useEffect(() => {
     dispatch(fetchNewArrivals());
   }, [dispatch]);
 
   return (
-    <div>
-      <div className="container mx-auto mt-12 px-6">
-        <h2 className="text-3xl font-bold text-center mb-6">New Arrivals</h2>
-        <p className="text-center mb-12">
+    <section className="bg-white py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto text-center">
+        <h2 className="text-3xl sm:text-4xl font-bold text-gray-800 mb-4">
+          New Arrivals
+        </h2>
+        <p className="text-gray-600 max-w-2xl mx-auto mb-10">
           Our new arrivals are built to withstand your activities while keeping
           you looking your best!
         </p>
+
         <ResultProducts array={newArrivals} />
       </div>
-    </div>
+    </section>
   );
 };
 

@@ -32,7 +32,7 @@ const ProductDetail = () => {
   const decreaseQty = () => setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
 
   return (
-    <div className="font-sans">
+    <div className="font-sans mt-10">
       <div className="max-w-6xl mx-auto px-6 py-12">
         <div className="flex flex-col lg:flex-row gap-12 items-start">
           <div className="w-full lg:w-1/2">

@@ -8,8 +8,8 @@ import {
 
 const Item = ({ product }) => {
   const dispatch = useDispatch();
+  const currency = "₹"; // or "$", etc.
 
-  const currency = "";
   return (
     <Link
       onClick={() => {
@@ -18,15 +18,18 @@ const Item = ({ product }) => {
         }
       }}
       to={`/product/${product._id}`}
+      className="block"
     >
-      <div className="border p-4 rounded-lg shadow-sm">
+      <div className="border p-3 sm:p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 bg-white h-full">
         <img
           src={product?.image?.[0]?.url}
-          alt="Carabiner Set"
-          className="rounded-lg w-full"
+          alt={product?.name || "Product"}
+          className="rounded-lg w-full h-48 object-cover sm:h-52 md:h-64"
         />
-        <h3 className="mt-4 text-lg font-semibold">{product.name}</h3>
-        <p className="mt-2 text-gray-600">
+        <h3 className="mt-3 text-base sm:text-lg font-semibold text-gray-800 line-clamp-1">
+          {product.name}
+        </h3>
+        <p className="mt-1 text-sm sm:text-base text-gray-600">
           {currency}
           {product.price}
         </p>

@@ -1,202 +1,140 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { CgProfile } from "react-icons/cg";
 import { useDispatch, useSelector } from "react-redux";
-import { toast } from "react-toastify";
-import axios from "axios";
 import { logoutUser } from "../redux/slice/authSlice";
+import { IoMdClose } from "react-icons/io";
+import { FiMenu } from "react-icons/fi";
+
 const Navbar = () => {
-  const navigate = useNavigate();
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
   const { cartcount } = useSelector((state) => state.cart);
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  const navLinks = [
+    { path: "/", label: "Home" },
+    { path: "/category/men", label: "Men" },
+    { path: "/category/women", label: "Women" },
+    { path: "/category/kids", label: "Kids" },
+    { path: "/collection", label: "Collection" },
+    { path: "/cart", label: "Cart" },
+    { path: "/user/profile", label: "Profile" },
+    { path: "/user/orders", label: "Orders" },
+  ];
 
   return (
-    <div>
-      <nav class="bg-white shadow-md">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div class="flex justify-between h-16">
-            {/* <!-- Logo --> */}
-            <div class="flex-shrink-0 flex items-center">
-              <a
-                href="#"
-                class="text-2xl font-bold text-gray-800 hover:text-gray-600"
+    <nav className="bg-white shadow-md fixed top-0 left-0  right-0 z-100">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex justify-between items-center">
+        {/* Logo */}
+        <Link to="/" className="text-2xl font-extrabold text-gray-800">
+          Fashion<span className="text-pink-500">Wear</span>
+        </Link>
+
+        {/* Desktop Nav */}
+        {user && (
+          <div className="hidden md:flex gap-6 items-center">
+            {navLinks.slice(0, 5).map((link) => (
+              <Link
+                key={link.label}
+                to={link.path}
+                className="text-gray-700 hover:text-pink-500 font-medium transition"
               >
-                FashionWear
-              </a>
-            </div>
+                {link.label}
+              </Link>
+            ))}
+          </div>
+        )}
 
-            {/* <!-- Navbar Links --> */}
-            {user && (
-              <div class="hidden md:flex space-x-8 items-center">
-                <a
-                  href="/"
-                  class="text-gray-700 hover:text-gray-900 font-medium"
-                >
-                  Home
-                </a>
-                <a
-                  href="/category/men"
-                  class="text-gray-700 hover:text-gray-900 font-medium"
-                >
-                  Men
-                </a>
-                <a
-                  href="/category/women"
-                  class="text-gray-700 hover:text-gray-900 font-medium"
-                >
-                  Women
-                </a>
-                <a
-                  href="/category/kids"
-                  class="text-gray-700 hover:text-gray-900 font-medium"
-                >
-                  Kids
-                </a>
-                <a
-                  href="/collection"
-                  class="text-gray-700 hover:text-red-500 font-medium"
-                >
-                  Collection
-                </a>
+        {/* Right side (Cart & Profile) */}
+        {user && (
+          <div className="hidden md:flex items-center space-x-6">
+            <Link to="/cart" className="relative text-gray-700 hover:text-gray-900">
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
+                  d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m12-9l2 9m-6-2a2 2 0 100 4 2 2 0 000-4z" />
+              </svg>
+              <span className="absolute -top-2 -right-2 text-xs bg-red-600 text-white rounded-full px-1">
+                {cartcount}
+              </span>
+            </Link>
+
+            <div className="relative group">
+              <span className="cursor-pointer">
+                <CgProfile size={25} />
+              </span>
+              <div className="absolute right-0 mt-2 w-40 bg-white border rounded-md shadow-md opacity-0 group-hover:opacity-100 transition duration-200 z-50">
+                <ul className="py-2">
+                  <Link to="/user/profile"><li className="px-4 py-2 hover:bg-gray-100">Profile</li></Link>
+                  {user?.role === "admin" && (
+                    <Link to="/admin/dashboard"><li className="px-4 py-2 hover:bg-gray-100">Admin</li></Link>
+                  )}
+                  <Link to="/user/orders"><li className="px-4 py-2 hover:bg-gray-100">Orders</li></Link>
+                  <li onClick={() => dispatch(logoutUser())} className="px-4 py-2 hover:bg-gray-100 cursor-pointer">Logout</li>
+                </ul>
               </div>
-            )}
-            {/* <!-- Cart & User Section --> */}
-            {user && (
-              <div class="flex  items-center space-x-6">
-                <a
-                  href="/cart"
-                  class="text-gray-700 hover:text-gray-900 flex relative  items-center"
-                >
-                  <svg
-                    class="w-6 h-6"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m12-9l2 9m-6-2a2 2 0 100 4 2 2 0 000-4z"
-                    ></path>
-                  </svg>
-                  <span className="absolute -top-3 -right-2 text-white text-xs bg-red-600 rounded-4xl px-1">
-                    {cartcount}
-                  </span>
-                </a>
-                <div className="relative group">
-                  <span>
-                    <CgProfile size={25} />
-                  </span>
-
-                  <div className="absolute z-99 -right-15 mt-2 w-40 bg-white border rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-                    <ul className="py-2">
-                      <Link to={"/user/profile"}>
-                        <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
-                          Profile
-                        </li>
-                      </Link>
-                      {user?.role === "admin" && (
-                        <Link to={"/admin/dashboard"}>
-                          {" "}
-                          <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
-                            Admin
-                          </li>
-                        </Link>
-                      )}
-
-                      <Link to={"/user/orders"}>
-                        <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
-                          Orders
-                        </li>
-                      </Link>
-                      <li
-                        onClick={() => dispatch(logoutUser())}
-                        className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-                      >
-                        Logout
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-            )}
-            {/* <!-- Mobile Menu Button --> */}
-            <div class="md:hidden flex items-center">
-              <button
-                id="menu-toggle"
-                class="text-gray-700 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-500"
-              >
-                <svg
-                  class="w-6 h-6"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M4 6h16M4 12h16m-7 6h7"
-                  ></path>
-                </svg>
-              </button>
             </div>
           </div>
-        </div>
+        )}
 
-        {/* <!-- Mobile Menu --> */}
-        <div id="mobile-menu" class="hidden md:hidden">
-          <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-            <a
-              href="#"
-              class="block text-gray-700 hover:text-gray-900 font-medium"
+        {/* Mobile Menu Icon */}
+        <div className="md:hidden">
+          <button onClick={() => setMenuOpen(!menuOpen)} className="text-gray-700 hover:text-gray-900">
+            {menuOpen ? <IoMdClose size={25} /> : <FiMenu size={25} />}
+          </button>
+        </div>
+      </div>
+
+      {/* Mobile Slide Menu */}
+      <div
+        className={`md:hidden fixed  top-16 left-0 w-full bg-white shadow-md transition-transform duration-300 ${
+          menuOpen ? "translate-x-0" : "-translate-x-full"
+        }`}
+      >
+        <div className="flex  flex-col px-4 py-6 space-y-3">
+          {user &&
+            navLinks.map((link) => (
+              <Link
+                key={link.label}
+                to={link.path}
+                onClick={() => setMenuOpen(false)}
+                className="text-gray-800 font-medium hover:text-pink-500 transition"
+              >
+                {link.label}
+              </Link>
+            ))}
+          {user?.role === "admin" && (
+            <Link
+              to="/admin/dashboard"
+              onClick={() => setMenuOpen(false)}
+              className="text-gray-800 font-medium hover:text-pink-500"
             >
-              Home
-            </a>
-            <a
-              href="#men"
-              class="block text-gray-700 hover:text-gray-900 font-medium"
+              Admin
+            </Link>
+          )}
+          {user && (
+            <button
+              onClick={() => {
+                dispatch(logoutUser());
+                setMenuOpen(false);
+              }}
+              className="text-left text-gray-800 hover:text-red-500 font-medium"
             >
-              Men
-            </a>
-            <a
-              href="#women"
-              class="block text-gray-700 hover:text-gray-900 font-medium"
-            >
-              Women
-            </a>
-            <a
-              href="#kids"
-              class="block text-gray-700 hover:text-gray-900 font-medium"
-            >
-              Kids
-            </a>
-            <a
-              href="#sale"
-              class="block text-gray-700 hover:text-red-500 font-medium"
-            >
-              Sale
-            </a>
-            <a
-              href="#cart"
-              class="block text-gray-700 hover:text-gray-900 font-medium"
-            >
-              Cart
-            </a>
-            <a
-              href="#login"
-              class="block text-gray-700 hover:text-gray-900 font-medium"
+              Logout
+            </button>
+          )}
+          {!user && (
+            <Link
+              to="/login"
+              onClick={() => setMenuOpen(false)}
+              className="text-gray-800 hover:text-pink-500"
             >
               Login
-            </a>
-          </div>
+            </Link>
+          )}
         </div>
-      </nav>
-    </div>
+      </div>
+    </nav>
   );
 };
 

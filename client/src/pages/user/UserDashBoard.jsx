@@ -1,67 +1,81 @@
-import React from "react";
-import { useSelector } from "react-redux";
+import React, { useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import { Link, Outlet } from "react-router-dom";
+import { logoutUser } from "../../redux/slice/authSlice";
+import { FiMenu, FiX } from "react-icons/fi";
 
 const UserDashBoard = () => {
-    const { user } = useSelector((store) => store.auth);
-  
-  // const user = {
-  //   name: "John Doe",
-  //   email: "john@example.com",
-  //   orders: 5,
-  //   wishlist: 3,
-  //   totalSpent: "$500",
-  //   profilePic: "https://via.placeholder.com/100",
-  // };
+  const { user } = useSelector((store) => store.auth);
+  const dispatch = useDispatch();
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-   <div className="min-h-screen bg-gray-100 flex">
-  {/* Sidebar */}
-  <aside className="w-72 bg-slate-900 text-white flex flex-col justify-between py-6 px-4 shadow-lg">
-    <div>
-      {/* User Info */}
-      <div className="flex items-center space-x-4 mb-8 border-b border-slate-700 pb-4">
-        {/* <img src={user.profilePic} alt="Profile" className="w-14 h-14 rounded-full border-2 border-white" /> */}
-        <div>
-          <h2 className="text-xl font-semibold">{user.name}</h2>
-          <p className="text-sm text-slate-400">{user.email}</p>
+    <div className="flex bg-gray-100 min-h-screen overflow-hidden">
+      {/* Sidebar */}
+      <aside
+        className={`fixed z-40 top-16 left-0 h-[calc(100vh-4rem)] w-64 bg-slate-900 text-white transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:h-auto lg:block ${
+          sidebarOpen ? "translate-x-0" : "-translate-x-full"
+        }`}
+      >
+        <div className="flex flex-col justify-between mt-15 h-full p-6">
+          <div>
+            {/* User Info */}
+            <div className="mb-6 border-b border-slate-700 pb-4">
+              <h2 className="text-lg font-bold">{user.name}</h2>
+              <p className="text-sm text-slate-400">{user.email}</p>
+            </div>
+
+            {/* Navigation */}
+            <nav className="space-y-3">
+              <Link to="/user/profile">
+                <button className="w-full text-left px-4 py-2 rounded-md bg-slate-800 hover:bg-slate-700">
+                  🏠 Dashboard
+                </button>
+              </Link>
+              <Link to="/user/orders">
+                <button className="w-full text-left px-4 py-2 rounded-md bg-slate-800 hover:bg-slate-700">
+                  📦 My Orders
+                </button>
+              </Link>
+              <Link to="/user/wishlist">
+                <button className="w-full text-left px-4 py-2 rounded-md bg-slate-800 hover:bg-slate-700">
+                  ❤️ Wishlist
+                </button>
+              </Link>
+            </nav>
+          </div>
+
+          {/* Logout */}
+          <div className="pt-6 border-t  border-slate-700 mb-20 mt-6">
+            <button
+              onClick={() => {
+                dispatch(logoutUser());
+                setSidebarOpen(false);
+              }}
+              className="w-full text-left px-4 py-2 bg-red-600 hover:bg-red-700 rounded-md"
+            >
+              🚪 Logout
+            </button>
+          </div>
         </div>
+      </aside>
+
+      {/* Mobile Toggle Button (Fixed Under Navbar) */}
+      <div className="lg:hidden fixed top-16 left-0 z-50 bg-white shadow-md w-full px-4 py-2">
+        <button
+          onClick={() => setSidebarOpen((prev) => !prev)}
+          className="flex items-center space-x-2 text-gray-800"
+        >
+          {sidebarOpen ? <FiX size={22} /> : <FiMenu size={22} />}
+          <span className="font-medium">Menu</span>
+        </button>
       </div>
 
-      {/* Navigation Links */}
-      <nav className="space-y-3">
-        <Link to="/user/profile">
-          <button className="w-full text-left px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 transition">
-            🏠 Dashboard
-          </button>
-        </Link>
-        <Link to="/user/orders">
-          <button className="w-full text-left px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 transition">
-            📦 My Orders
-          </button>
-        </Link>
-        <Link to="/user/wishlist">
-          <button className="w-full text-left px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 transition">
-            ❤️ Wishlist
-          </button>
-        </Link>
-      </nav>
+      {/* Main Content */}
+      <main className="flex-1 mt-24 lg:mt-16 px-4 py-6 lg:ml-64 overflow-y-auto w-full">
+        <Outlet />
+      </main>
     </div>
-
-    {/* Logout (Optional) */}
-    {/* <div className="mt-10">
-      <button className="w-full text-left px-4 py-2 bg-red-600 hover:bg-red-700 rounded-lg transition">
-        🚪 Logout
-      </button>
-    </div> */}
-  </aside>
-
-  {/* Main Content Area */}
-  <main className="flex-1 p-6 overflow-y-auto">
-    <Outlet />
-  </main>
-</div>
-
   );
 };
 

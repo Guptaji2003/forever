@@ -1,60 +1,94 @@
 import { useState } from "react";
-import { Outlet } from "react-router-dom";
+import { Outlet, NavLink } from "react-router-dom";
+import { Menu, X } from "lucide-react";
 
 const AdminDashboard = () => {
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
 
   return (
-    <div className="flex h-180 bg-gray-100">
+    <div className="flex min-h-[calc(100vh-4rem)] mt-16">
+      {" "}
+      {/* Adjusts for Navbar height */}
       {/* Sidebar */}
       <div
-        className={`bg-blue-900 text-white p-5 ${
-          open ? "w-64" : "w-20"
-        } transition-all duration-300`}
+        className={`fixed z-40 top-16 left-0 h-[calc(100vh-4rem)] bg-blue-900 text-white transition-all duration-300 
+        ${open ? "w-64" : "w-0"} overflow-hidden lg:w-64`}
       >
-        <div className="flex items-center justify-between">
-          <h1 className={`text-xl font-bold ${!open && "hidden"}`}>
-            Admin Panel
-          </h1>
-          {/* <button className="p-2 bg-gray-700 rounded" onClick={() => setOpen(!open)}>☰</button> */}
+        <div className="flex flex-col h-full justify-between p-4">
+          <div>
+            <div className="flex justify-between">
+              {" "}
+              <h2 className="text-lg font-bold mb-6">Admin Panel</h2>
+              <X className="w-6 h-6" onClick={() => setOpen(!open)}/>
+            </div>
+            <nav className="space-y-2">
+              <NavLink
+                to="/admin/dashboard"
+                className={({ isActive }) =>
+                  `block px-3 py-2 rounded hover:bg-blue-700 ${
+                    isActive ? "bg-blue-700" : ""
+                  }`
+                }
+              >
+                📊 Dashboard
+              </NavLink>
+              <NavLink
+                to="/admin/create"
+                className={({ isActive }) =>
+                  `block px-3 py-2 rounded hover:bg-blue-700 ${
+                    isActive ? "bg-blue-700" : ""
+                  }`
+                }
+              >
+                ➕ Create Product
+              </NavLink>
+              <NavLink
+                to="/admin/orders"
+                className={({ isActive }) =>
+                  `block px-3 py-2 rounded hover:bg-blue-700 ${
+                    isActive ? "bg-blue-700" : ""
+                  }`
+                }
+              >
+                📦 Orders
+              </NavLink>
+              <NavLink
+                to="/admin/users"
+                className={({ isActive }) =>
+                  `block px-3 py-2 rounded hover:bg-blue-700 ${
+                    isActive ? "bg-blue-700" : ""
+                  }`
+                }
+              >
+                👥 Users
+              </NavLink>
+              <NavLink
+                to="/admin/products"
+                className={({ isActive }) =>
+                  `block px-3 py-2 rounded hover:bg-blue-700 ${
+                    isActive ? "bg-blue-700" : ""
+                  }`
+                }
+              >
+                🗂️ All Products
+              </NavLink>
+            </nav>
+          </div>
         </div>
-        <nav className="mt-5 space-y-4">
-          <a
-            href="/admin/dashboard"
-            className="block p-2 hover:bg-blue-700 rounded"
-          >
-            Dashboard
-          </a>
-          <a
-            href="/admin/create"
-            className="block p-2 hover:bg-blue-700 rounded"
-          >
-            Create Product
-          </a>
-          <a
-            href="/admin/orders"
-            className="block p-2 hover:bg-blue-700 rounded"
-          >
-            Orders
-          </a>
-          <a
-            href="/admin/users"
-            className="block p-2 hover:bg-blue-700 rounded"
-          >
-            Users
-          </a>
-           <a
-            href="/admin/products"
-            className="block p-2 hover:bg-blue-700 rounded"
-          >
-            All Products
-          </a>
-          {/* <a href="#" className="block p-2 hover:bg-blue-700 rounded">Outlets</a> */}
-        </nav>
       </div>
-
       {/* Main Content */}
-      <Outlet />
+      <div className="flex-1 p-4 lg:ml-64  w-full">
+        {/* Mobile Menu Button */}
+        <button
+          className="lg:hidden mb-4 z-100 text-blue-900"
+          onClick={() => setOpen(!open)}
+        >
+          {open ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+        </button>
+
+        {/* Page Content */}
+        <Outlet />
+      </div>
     </div>
   );
 };
