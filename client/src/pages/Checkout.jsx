@@ -1,12 +1,17 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { createCheckout } from "../redux/slice/checkoutSlice";
+import {
+  createCheckout,
+  finalizeCheckout,
+  updateCheckout,
+} from "../redux/slice/checkoutSlice";
 import { useNavigate } from "react-router-dom";
 const Checkout = () => {
-   const dispatch = useDispatch();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
- const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const { cart } = useSelector((state) => state.cart);
+  const { checkoutInfo } = useSelector((state) => state.checkout);
   const [shipping, setShipping] = useState({
     address: "",
     city: "",
@@ -23,33 +28,38 @@ const Checkout = () => {
     setLoading(true);
     try {
       // 1. Create checkout
-      const { data } = await axios.post("/api/checkout/create-checkout", {
-        products,
-        shippingaddress: shippingAddress,
-        totalamount,
-        paymentmethod: paymentMethod,
-      });
+    await  dispatch(
+        createCheckout({
+          products:cart.products,
+          shippingaddress: shipping,
+          totalamount:cart.totalcartamount+10,
+          paymentmethod: paymentMethod,
+        })
+      );
 
-      const checkout = data.checkout;
+      // const data = checkoutInfo;
 
       // 2. If PhonePe, redirect to payment page
-      if (data.paymentInitiated && data.redirectUrl) {
-        window.location.href = data.redirectUrl;
-        return;
-      }
+      // if (data.paymentInitiated && data.redirectUrl) {
+      //   window.location.href = data.redirectUrl;
+      //   return;
+      // }
 
       // 3. If COD or UPI, simulate successful payment
-      if (paymentMethod === "COD" || paymentMethod === "UPI") {
-        await axios.put(`/api/checkout/update-checkout/${checkout._id}`, {
-          paymentStatus: "paid",
-          paymentDetails: {
-            method: paymentMethod,
-            transactionId: `txn_${Date.now()}`,
-          },
-        });
+      if (paymentMethod === "Cash on Delivery" || paymentMethod === "UPI") {
+       await dispatch(
+          updateCheckout({
+            id: checkoutInfo._id,
+            paymentStatus: "paid",
+            paymentDetails: {
+              method: paymentMethod,
+              transactionId: `txn_${Date.now()}`,
+            },
+          })
+        );
 
         // 4. Finalize order
-        await axios.post(`/api/checkout/final-checkout/${checkout._id}`);
+       await dispatch(finalizeCheckout(checkoutInfo._id));
         alert("Order placed successfully!");
         navigate("/user/orders");
       }
@@ -110,7 +120,7 @@ const Checkout = () => {
           >
             <option>Cash on Delivery</option>
             <option>UPI</option>
-            <option>Net Banking</option>
+            <option>Phonepe</option>
           </select>
 
           <div className="mb-4 space-y-2">
@@ -134,12 +144,12 @@ const Checkout = () => {
             onClick={handleCheckout}
             className="w-full mt-6 bg-blue-600 text-white py-3 px-6 rounded hover:bg-blue-700"
           >
-             {loading ? "Processing..." : "Place Order"}
+            {loading ? "Processing..." : "Place Order"}
           </button>
         </div>
       </div>
     </div>
   );
-}
+};
 
-export default Checkout
+export default Checkout;
