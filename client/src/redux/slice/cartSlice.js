@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-import { toast } from "react-toastify";
+import { toast } from "react-hot-toast";
 
 axios.defaults.withCredentials = true;
 const apiurl = import.meta.env.VITE_BACKEND_URL;
@@ -85,6 +85,7 @@ const cartSlice = createSlice({
   },
   reducers: {
     clearCartState: (state) => {
+      state.cartcount=0;
       state.cart = null;
       state.loading = false;
       state.error = null;

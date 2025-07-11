@@ -12,7 +12,7 @@ const NewArrival = () => {
   }, [dispatch]);
 
   return (
-    <section className="bg-white py-12 px-4 sm:px-6 lg:px-8">
+    <section data-aos="smooth" className="bg-white py-12 px-4 sm:px-6 lg:px-40">
       <div className="max-w-7xl mx-auto text-center">
         <h2 className="text-3xl sm:text-4xl font-bold text-gray-800 mb-4">
           New Arrivals

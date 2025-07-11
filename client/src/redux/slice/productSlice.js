@@ -1,7 +1,7 @@
 // src/redux/slice/productSlice.js
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-import { toast } from "react-toastify";
+import { toast } from "react-hot-toast";
 
 // Base API
 const BASE_URL = import.meta.env.VITE_BACKEND_URL;
@@ -36,13 +36,16 @@ export const updateProduct = createAsyncThunk(
   "product/update",
   async ({ id, updates }, thunkAPI) => {
     try {
-      console.log('====================================');
-      console.log(id,updates);
-      console.log('====================================');
-      const res = await axios.put(`${BASE_URL}/api/products/updateproduct/${id}`, updates);
-      console.log('====================================');
+      console.log("====================================");
+      console.log(id, updates);
+      console.log("====================================");
+      const res = await axios.put(
+        `${BASE_URL}/api/products/updateproduct/${id}`,
+        updates
+      );
+      console.log("====================================");
       console.log(res.data.product);
-      console.log('====================================');
+      console.log("====================================");
       // return res.data.product;
     } catch (err) {
       return thunkAPI.rejectWithValue(err.response.data);
@@ -85,9 +88,9 @@ export const fetchSingleProduct = createAsyncThunk(
       const res = await axios.get(
         `${BASE_URL}/api/products/singleproduct/${id}`
       );
-      console.log('====================================');
+      console.log("====================================");
       console.log(res.data);
-      console.log('====================================');
+      console.log("====================================");
       return res.data.product;
     } catch (error) {
       return thunkAPI.rejectWithValue(
@@ -112,7 +115,10 @@ export const fetchRelatedProducts = createAsyncThunk(
 
 export const filterProducts = createAsyncThunk(
   "products/filterProducts",
-  async ({ category, minprice, maxprice, search, sort }, thunkAPI) => {
+  async (
+    { category, minprice, maxprice, search, sort, color, size },
+    thunkAPI
+  ) => {
     try {
       const queryParams = new URLSearchParams();
 
@@ -121,13 +127,15 @@ export const filterProducts = createAsyncThunk(
       if (maxprice) queryParams.append("maxprice", maxprice);
       if (search) queryParams.append("search", search);
       if (sort) queryParams.append("sort", sort);
+      if (color) queryParams.append("color", color);
+      if (size) queryParams.append("size", size);
 
       const res = await axios.get(
         `${BASE_URL}/api/products/filter?${queryParams.toString()}`
       );
-console.log('====================================');
-console.log(res.data.products);
-console.log('====================================');
+      console.log("====================================");
+      console.log(res.data.products);
+      console.log("====================================");
       return res.data.products;
     } catch (err) {
       return thunkAPI.rejectWithValue(
@@ -143,7 +151,7 @@ const productSlice = createSlice({
   name: "product",
   initialState: {
     allProducts: [],
-    totalProduct:0,
+    totalProduct: 0,
     singleProduct: null,
     newArrivals: [],
     filteredProducts: [],
@@ -165,7 +173,7 @@ const productSlice = createSlice({
       .addCase(fetchAllProducts.fulfilled, (state, action) => {
         state.loading = false;
         state.allProducts = action.payload;
-        state.totalProduct=action.payload.length;
+        state.totalProduct = action.payload.length;
       })
       .addCase(fetchAllProducts.rejected, (state, action) => {
         state.loading = false;
@@ -225,7 +233,7 @@ const productSlice = createSlice({
         state.loading = false;
       })
       //filter
-       .addCase(filterProducts.pending, (state, action) => {
+      .addCase(filterProducts.pending, (state, action) => {
         state.loading = true;
       })
       .addCase(filterProducts.fulfilled, (state, action) => {

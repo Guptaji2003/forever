@@ -5,7 +5,7 @@ const UserOrders = () => {
   const { userOrders, loading } = useSelector((store) => store.order);
 
   return (
-    <div className="max-w-6xl mx-auto p-4 sm:p-6">
+    <div data-aos="fade-up" className="max-w-6xl mx-auto p-4 sm:p-6">
       <h2 className="text-3xl font-bold text-gray-800 mb-6">🧾 My Orders</h2>
 
       {loading ? (
@@ -29,7 +29,7 @@ const UserOrders = () => {
                     Placed on: {new Date(order.createdAt).toLocaleString()}
                   </p>
                   <p className="text-sm text-gray-500 mt-1">
-                    Payment: {order.isPaid ? "✅ Paid" : "❌ Not Paid"} |{" "}
+                    Payment: {order.isPaid ? `✅ ${order.paymentStatus}` : "❌ Not Paid"} |{" "}
                     {order.paymentmethod}
                   </p>
                 </div>

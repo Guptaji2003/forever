@@ -4,10 +4,11 @@ import { AdminUpdateUser } from "../../redux/slice/authSlice";
 
 const AdminUsers = () => {
   const { alluser, loading } = useSelector((store) => store.auth);
+  const { allOrders } = useSelector((store) => store.order);
   const dispatch = useDispatch();
 
   return (
-    <div className="min-h-screen bg-gray-100 px-4 md:px-8 py-6">
+    <div data-aos="fade-up" className="min-h-screen bg-gray-100 px-4 md:px-8 py-6">
       <h2 className="text-3xl font-bold text-gray-800 mb-6">👥 Users</h2>
 
       <div className="bg-white rounded-xl shadow-lg p-4 overflow-x-auto">
@@ -27,28 +28,42 @@ const AdminUsers = () => {
               </tr>
             </thead>
             <tbody>
-              {alluser.map((user, index) => (
-                <tr
-                  key={index}
-                  className="border-t hover:bg-gray-50 transition text-center"
-                >
-                  <td className="px-4 py-3 text-gray-700">{user._id.slice(-6)}</td>
-                  <td className="px-4 py-3 font-medium">{user.name}</td>
-                  <td className="px-4 py-3">{user.email}</td>
-                  <td className="px-4 py-3">{user.orders?.length || 0}</td>
-                  <td className="px-4 py-3">₹{user.totalspent || 0}</td>
-                  <td className="px-4 py-3 capitalize">{user.role}</td>
-                  <td className="px-4 py-3 space-x-2">
-                    <button
-                      onClick={() => dispatch(AdminUpdateUser(user._id))}
-                      className="px-3 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 text-sm"
-                    >
-                      Change Role
-                    </button>
-                    {/* Future: Remove button */}
-                  </td>
-                </tr>
-              ))}
+              {alluser.map((user, index) => {
+                const userOrders = allOrders.filter(
+                  (order) => order.userId === user._id
+                );
+                console.log('====================================');
+                console.log(userOrders);
+                console.log('====================================');
+                const totalSpent = userOrders.reduce(
+                  (sum, order) => sum + order.totalAmount,
+                  0
+                );
+                return (
+                  <tr
+                    key={index}
+                    className="border-t hover:bg-gray-50 transition text-center"
+                  >
+                    <td className="px-4 py-3 text-gray-700">
+                      {user._id.slice(-6)}
+                    </td>
+                    <td className="px-4 py-3 font-medium">{user.name}</td>
+                    <td className="px-4 py-3">{user.email}</td>
+                    <td className="px-4 py-3">{userOrders?.length || 0}</td>
+                    <td className="px-4 py-3">₹{totalSpent || 0}</td>
+                    <td className="px-4 py-3 capitalize">{user.role}</td>
+                    <td className="px-4 py-3 space-x-2">
+                      <button
+                        onClick={() => dispatch(AdminUpdateUser(user._id))}
+                        className="px-3 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 text-sm"
+                      >
+                        Change Role
+                      </button>
+                      {/* Future: Remove button */}
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         ) : (

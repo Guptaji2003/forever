@@ -1,12 +1,18 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Outlet, NavLink } from "react-router-dom";
 import { Menu, X } from "lucide-react";
+import { useDispatch } from "react-redux";
+import { fetchAllOrders } from "../../redux/slice/orderSlice";
 
 const AdminDashboard = () => {
   const [open, setOpen] = useState(false);
+//   const dispatch=useDispatch();
+// useEffect(() => {
+// dispatch(fetchAllOrders());
+// }, [dispatch])
 
   return (
-    <div className="flex min-h-[calc(100vh-4rem)] mt-16">
+    <div data-aos="fade-up" className="flex min-h-[calc(100vh-4rem)] mt-16">
       {" "}
       {/* Adjusts for Navbar height */}
       {/* Sidebar */}

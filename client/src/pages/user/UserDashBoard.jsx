@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { Link, Outlet } from "react-router-dom";
 import { logoutUser } from "../../redux/slice/authSlice";
 import { FiMenu, FiX } from "react-icons/fi";
+import { clearCartState } from "../../redux/slice/cartSlice";
 
 const UserDashBoard = () => {
   const { user } = useSelector((store) => store.auth);
@@ -10,7 +11,7 @@ const UserDashBoard = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-    <div className="flex bg-gray-100 min-h-screen overflow-hidden">
+    <div data-aos="fade-up" className="flex bg-gray-100 min-h-screen overflow-hidden">
       {/* Sidebar */}
       <aside
         className={`fixed z-40 top-16 left-0 h-[calc(100vh-4rem)] w-64 bg-slate-900 text-white transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:h-auto lg:block ${
@@ -20,13 +21,14 @@ const UserDashBoard = () => {
         <div className="flex flex-col justify-between mt-15 h-full p-6">
           <div>
             {/* User Info */}
-            <div className="mb-6 border-b border-slate-700 pb-4">
+            <div className="mb-6 flex flex-col justify-center items-center border-b border-slate-700 pb-4">
+              <img src="" alt="" className="h-13 w-13 rounded-full bg-white"/>
               <h2 className="text-lg font-bold">{user.name}</h2>
-              <p className="text-sm text-slate-400">{user.email}</p>
+              {/* <p className="text-sm text-slate-400">{user.email}</p> */}
             </div>
 
             {/* Navigation */}
-            <nav className="space-y-3">
+            <nav className="space-y-3 flex flex-col">
               <Link to="/user/profile">
                 <button className="w-full text-left px-4 py-2 rounded-md bg-slate-800 hover:bg-slate-700">
                   🏠 Dashboard
@@ -50,6 +52,7 @@ const UserDashBoard = () => {
             <button
               onClick={() => {
                 dispatch(logoutUser());
+                dispatch(clearCartState())
                 setSidebarOpen(false);
               }}
               className="w-full text-left px-4 py-2 bg-red-600 hover:bg-red-700 rounded-md"
@@ -72,7 +75,7 @@ const UserDashBoard = () => {
       </div>
 
       {/* Main Content */}
-      <main className="flex-1 mt-24 lg:mt-16 px-4 py-6 lg:ml-64 overflow-y-auto w-full">
+      <main className="flex-1 mt-24 lg:mt-16 px-4 py-6  overflow-y-auto w-full">
         <Outlet />
       </main>
     </div>

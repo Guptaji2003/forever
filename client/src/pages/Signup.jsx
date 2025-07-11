@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { toast } from "react-toastify";
+import { toast } from "react-hot-toast";
 import { registerUser } from "../redux/slice/authSlice";
 
 const Signup = () => {
@@ -34,7 +34,7 @@ const Signup = () => {
   };
   return (
     <div>
-      <div class="flex items-center justify-center min-h-screen bg-gray-100">
+      <div data-aos="fade-up" class="flex items-center justify-center min-h-screen bg-gray-100">
         <div class="w-full max-w-md bg-white rounded-lg shadow-lg p-6">
           <h1 class="text-2xl font-bold text-gray-800 text-center mb-6">
             Create New Account

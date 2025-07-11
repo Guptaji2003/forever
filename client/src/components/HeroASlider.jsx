@@ -1,7 +1,9 @@
 import React from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Pagination, Navigation } from "swiper/modules";
-
+import ban1 from '../assets/_Beige & Black Modern Shadow Women Collection Promo Banner.png'
+import ban2 from '../assets/_Beige & Soft Brown Simple Woman Fashion Collection Promo Banner Landscape.png'
+import ban3 from '../assets/Black & White Simple Fashion Sale Banner.png'
 import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
@@ -9,21 +11,21 @@ import "swiper/css/navigation";
 const banners = [
   {
     id: 1,
-    image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30",
+    image: ban1,
     heading: "Upgrade Your Style",
     subtext: "Discover new arrivals every week",
     cta: "Shop Now",
   },
   {
     id: 2,
-    image: "https://images.unsplash.com/photo-1521335629791-ce4aec67ddaf",
+    image: ban2,
     heading: "Trendy Collection",
     subtext: "For men, women & kids",
     cta: "Explore",
   },
   {
     id: 3,
-    image: "https://images.unsplash.com/photo-1602810319056-0e37aebfc8c5",
+    image: ban3,
     heading: "Your Style, Your Way",
     subtext: "Affordable & fashionable",
     cta: "Get Started",
@@ -46,9 +48,10 @@ const HeroSlider = () => {
           <SwiperSlide key={banner.id}>
             <div
               className="w-full h-[90vh] bg-cover bg-center flex items-center"
-              style={{ backgroundImage: `url('${banner.image}')` }}
+              // style={{ backgroundImage: `url('${banner.image}')` }}
             >
-              <div className="bg-black bg-opacity-60 w-full h-full flex items-center px-10 md:px-20">
+              <img src={banner.image} alt="" />
+              <div className=" bg-opacity-60 w-full h-full flex items-center px-10 md:px-20">
                 <div className="text-white max-w-2xl">
                   <h1 className="text-4xl md:text-6xl font-bold mb-4">{banner.heading}</h1>
                   <p className="text-lg md:text-xl mb-6">{banner.subtext}</p>

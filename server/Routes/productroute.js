@@ -110,16 +110,23 @@ router.get("/relatedproducts/:id", isAuthenticated, async (req, res) => {
 });
 router.get("/filter", isAuthenticated, async (req, res) => {
   try {
-    const { category, minprice, maxprice, search, sort } = req.query;
+    const { category, minprice, maxprice, search, sort, color, size } = req.query;
+
     let filter = {};
+
+    // Category filter
     if (category && category !== "all") {
       filter.category = category;
     }
+
+    // Price filter
     if (minprice || maxprice) {
       filter.price = {};
       if (minprice) filter.price.$gte = Number(minprice);
       if (maxprice) filter.price.$lte = Number(maxprice);
     }
+
+    // Search filter
     if (search) {
       filter.$or = [
         { name: { $regex: search, $options: 'i' } },
@@ -127,22 +134,39 @@ router.get("/filter", isAuthenticated, async (req, res) => {
       ];
     }
 
-    let sortoption={};
-    if(sort){
-      const fields=sort.split(",");
+    // Color filter
+    if (color && color !== "all") {
+      filter.color = color.toLowerCase();;
+    }
+
+    // Size filter
+    if (size && size !== "all") {
+      filter.size = size;
+    }
+
+    // Sorting
+    let sortoption = {};
+    if (sort) {
+      const fields = sort.split(",");
       fields.forEach(field => {
-        sortoption[field.replace('-','')]=field.startsWith('-')?-1:1;
+        sortoption[field.replace("-", "")] = field.startsWith("-") ? -1 : 1;
       });
     }
 
-    const products=await productmodel.find(filter).sort(sortoption);
+    const products = await productmodel.find(filter).sort(sortoption);
+
     res.json({
       success: true,
-      message: "related Product fetch successfully",
+      message: "Filtered products fetched successfully",
       products,
     });
   } catch (err) {
     console.log(err);
+    res.status(500).json({
+      success: false,
+      message: "Server Error",
+    });
   }
 });
+
 module.exports = router;

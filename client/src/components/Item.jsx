@@ -5,6 +5,7 @@ import {
   fetchRelatedProducts,
   fetchSingleProduct,
 } from "../redux/slice/productSlice";
+import { Star } from "lucide-react";
 
 const Item = ({ product }) => {
   const dispatch = useDispatch();
@@ -20,19 +21,25 @@ const Item = ({ product }) => {
       to={`/product/${product._id}`}
       className="block"
     >
-      <div className="border p-3 sm:p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 bg-white h-full">
+      <div className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-fuchsia-500 transition duration-300">
+        {/* Image */}
         <img
           src={product?.image?.[0]?.url}
-          alt={product?.name || "Product"}
-          className="rounded-lg w-full h-48 object-cover sm:h-52 md:h-64"
+          alt={product?.image?.[0]?.altText || product.name}
+          className="w-full h-64 object-cover"
         />
-        <h3 className="mt-3 text-base sm:text-lg font-semibold text-gray-800 line-clamp-1">
-          {product.name}
-        </h3>
-        <p className="mt-1 text-sm sm:text-base text-gray-600">
-          {currency}
-          {product.price}
-        </p>
+
+        {/* Info */}
+        <div className="p-4 space-y-2">
+          <p className="border w-min rounded px-2 bg-gray-700 text-white">{product.category}</p>
+          {/* Name */}
+          <h3 className="text-lg font-semibold text-gray-800 truncate">
+            {product.name}
+          </h3>
+
+          {/* Price */}
+          <p className="text-pink-600 font-bold text-lg">₹{product?.price}</p>
+        </div>
       </div>
     </Link>
   );

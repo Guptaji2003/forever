@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-import { toast } from "react-toastify";
+import { toast } from "react-hot-toast";
+// import { toast } from "react-toastify";
 
 axios.defaults.withCredentials = true;
 const apiurl = import.meta.env.VITE_BACKEND_URL;
@@ -14,7 +15,7 @@ export const createCheckout = createAsyncThunk(
         `${apiurl}/api/checkouts/create-checkout`,
         checkoutData
       );
-      toast.success("Checkout created successfully");
+      // toast.success("Checkout created successfully");
       console.log('====================================');
       console.log(res.data.checkout);
       console.log('====================================');
@@ -38,8 +39,11 @@ export const updateCheckout = createAsyncThunk(
           paymentDetails,
         }
       );
-      toast.success("Checkout updated successfully");
-      return data.checkout;
+      // toast.success("Checkout updated successfully");
+      console.log('====================================');
+      console.log(res.data.checkout);
+      console.log('====================================');
+      return res.data.checkout;
     } catch (err) {
       toast.error("Failed to update checkout");
       return rejectWithValue(err.response?.data || err.message);
@@ -60,7 +64,7 @@ export const finalizeCheckout = createAsyncThunk(
         }
       );
       toast.success("Order placed successfully");
-      return data.finalorder;
+      return res.data.finalorder;
     } catch (err) {
       toast.error("Finalization failed");
       return rejectWithValue(err.response?.data || err.message);

@@ -8,7 +8,7 @@ const Hero = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col-reverse md:flex-row items-center gap-10">
         
         {/* Left Text Section */}
-        <div className="flex-1 text-center md:text-left space-y-6">
+        {/* <div className="flex-1 text-center md:text-left space-y-6">
           <h1 className="text-4xl sm:text-5xl font-bold text-gray-800 leading-tight">
             Welcome to <span className="text-blue-600">Your Brand</span>
           </h1>
@@ -23,7 +23,7 @@ const Hero = () => {
               Explore
             </button>
           </div>
-        </div>
+        </div> */}
 
         {/* Right Slider/Visual Section */}
         <div className="flex-1 w-full">

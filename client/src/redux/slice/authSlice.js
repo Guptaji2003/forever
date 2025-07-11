@@ -4,7 +4,7 @@ import axios from "axios";
 axios.defaults.withCredentials = true;
 const apiurl = import.meta.env.VITE_BACKEND_URL;
 
-const userfromstorage = localStorage.getItem("user")
+const userfromstorage = localStorage.getItem("user")  
   ? JSON.parse(localStorage.getItem("user"))
   : null;
 
@@ -78,6 +78,8 @@ export const UpdateProfile = createAsyncThunk(
       const res = await axios.put(`${apiurl}/api/users/updateprofile`, {
         name: data,
       });
+      localStorage.setItem("user", JSON.stringify(res.data));
+
       return res.data;
     } catch (err) {
       return thunkAPI.rejectWithValue(
@@ -181,8 +183,7 @@ const authSlice = createSlice({
       })
 
       .addCase(UpdateProfile.fulfilled, (state, action) => {
-        state.user = action.payload;
-        state.isAuthenticated = true;
+        state.user.name = action.payload.name;
       })
 
       .addCase(AdminUpdateUser.fulfilled, (state, action) => {

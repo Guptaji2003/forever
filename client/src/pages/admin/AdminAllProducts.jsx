@@ -26,7 +26,7 @@ const AdminAllProducts = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 px-4 md:px-20 py-6">
+    <div data-aos="fade-up" className="min-h-screen bg-gray-100 px-4 md:px-20 py-6">
       <h1 className="text-4xl font-bold mb-4">🛍️ All Products</h1>
       <p className="mb-6 text-gray-600">Total Products: {totalProduct}</p>
 

@@ -6,12 +6,16 @@ import {
   updateCheckout,
 } from "../redux/slice/checkoutSlice";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-hot-toast";
 const Checkout = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const { cart } = useSelector((state) => state.cart);
-  const { checkoutInfo } = useSelector((state) => state.checkout);
+  // const { checkoutInfo } = useSelector((state) => state.checkout);
+  console.log("====================================");
+  // console.log(checkoutInfo?._id);
+  console.log("====================================");
   const [shipping, setShipping] = useState({
     address: "",
     city: "",
@@ -28,41 +32,45 @@ const Checkout = () => {
     setLoading(true);
     try {
       // 1. Create checkout
-    await  dispatch(
-        createCheckout({
-          products:cart.products,
-          shippingaddress: shipping,
-          totalamount:cart.totalcartamount+10,
-          paymentmethod: paymentMethod,
-        })
-      );
+       const result = await dispatch(
+      createCheckout({
+        products: cart.products,
+        shippingaddress: shipping,
+        totalamount: cart.totalcartamount + 10,
+        paymentmethod: paymentMethod,
+      })
+    );
 
+    const checkoutInfo = result.payload;
       // const data = checkoutInfo;
 
       // 2. If PhonePe, redirect to payment page
+      if (paymentMethod === "Phonepe") {
+        toast.success("Payment Successfull");
+      }
       // if (data.paymentInitiated && data.redirectUrl) {
       //   window.location.href = data.redirectUrl;
       //   return;
       // }
 
       // 3. If COD or UPI, simulate successful payment
-      if (paymentMethod === "Cash on Delivery" || paymentMethod === "UPI") {
-       await dispatch(
+      if (paymentMethod === "Cash on Delivery") {
+        await dispatch(
           updateCheckout({
-            id: checkoutInfo._id,
-            paymentStatus: "paid",
+            id: checkoutInfo?._id,
+            paymentStatus: "pay on delivery",
             paymentDetails: {
               method: paymentMethod,
               transactionId: `txn_${Date.now()}`,
             },
           })
         );
-
-        // 4. Finalize order
-       await dispatch(finalizeCheckout(checkoutInfo._id));
-        alert("Order placed successfully!");
-        navigate("/user/orders");
       }
+
+      //   // 4. Finalize order
+      await dispatch(finalizeCheckout(checkoutInfo?._id));
+      // toast("Order placed successfully!");
+      navigate("/user/orders");
     } catch (err) {
       console.error(err);
       alert("Something went wrong during checkout");
@@ -72,7 +80,7 @@ const Checkout = () => {
   };
 
   return (
-    <div className="max-w-5xl mx-auto px-4 py-10">
+    <div data-aos="fade-up" className="max-w-5xl mx-auto px-4 py-20 ">
       <h2 className="text-3xl font-bold mb-8">Checkout</h2>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -80,6 +88,7 @@ const Checkout = () => {
         <div className="bg-white shadow-md p-6 rounded-lg">
           <h3 className="text-xl font-semibold mb-4">Shipping Details</h3>
           <input
+            required
             name="address"
             placeholder="Address"
             value={shipping.address}
@@ -87,6 +96,7 @@ const Checkout = () => {
             className="w-full mb-3 px-4 py-2 border rounded"
           />
           <input
+            required
             name="city"
             placeholder="City"
             value={shipping.city}
@@ -94,6 +104,7 @@ const Checkout = () => {
             className="w-full mb-3 px-4 py-2 border rounded"
           />
           <input
+            required
             name="postalcode"
             placeholder="Postal Code"
             type="number"
@@ -102,6 +113,7 @@ const Checkout = () => {
             className="w-full mb-3 px-4 py-2 border rounded"
           />
           <input
+            required
             name="state"
             placeholder="State"
             value={shipping.state}
@@ -119,7 +131,7 @@ const Checkout = () => {
             className="w-full mb-4 px-4 py-2 border rounded"
           >
             <option>Cash on Delivery</option>
-            <option>UPI</option>
+            {/* <option>UPI</option> */}
             <option>Phonepe</option>
           </select>
 
@@ -133,11 +145,14 @@ const Checkout = () => {
               </div>
             ))}
           </div>
-
+          <div className="flex justify-between text-sm">
+            <p>Tax</p>
+            <p>10</p>
+          </div>
           <hr className="my-3" />
           <div className="flex justify-between font-semibold text-lg">
             <span>Total:</span>
-            <span>₹{cart?.totalcartamount}</span>
+            <span>₹{cart?.totalcartamount + 10}</span>
           </div>
 
           <button

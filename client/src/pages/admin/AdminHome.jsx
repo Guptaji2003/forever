@@ -6,7 +6,7 @@ const AdminHome = () => {
   const { allOrders, totalRevenue } = useSelector((state) => state.order);
 
   return (
-    <div className="flex-1 px-4 md:px-8 py-8 bg-gray-50 min-h-screen">
+    <div data-aos="fade-up" className="flex-1 px-4 md:px-8 py-8 bg-gray-50 min-h-screen">
       <h1 className="text-3xl font-bold text-gray-800 mb-6">
         📊 Dashboard Overview
       </h1>

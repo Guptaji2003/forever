@@ -12,7 +12,7 @@ const AdminOrders = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-10 ">
+    <div data-aos="fade-up" className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-10 ">
       <h2 className="text-4xl font-bold text-gray-800 mb-10">📦 User Orders</h2>
 
       <div className="space-y-10 max-h-[600px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100 pr-2">

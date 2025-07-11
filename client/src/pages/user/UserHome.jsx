@@ -1,7 +1,7 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { UpdateProfile } from "../../redux/slice/authSlice";
-
+import { toast } from 'react-hot-toast';
 const UserHome = () => {
   const { user } = useSelector((store) => store.auth);
   const { totalspent, userOrders } = useSelector((store) => store.order);
@@ -15,7 +15,7 @@ const UserHome = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 px-4 py-6 sm:px-6 lg:px-8">
+    <div data-aos="fade-up" className="min-h-screen bg-gray-50 px-4 py-6 sm:px-6 lg:px-8">
       {/* Title */}
       <h1 className="text-3xl sm:text-4xl font-bold text-gray-800 mb-6">
         👤 Welcome, {user?.name?.split(" ")[0] || "User"}!

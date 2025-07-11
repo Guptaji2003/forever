@@ -7,7 +7,7 @@ const UserWishlist = () => {
     // const { user } = useSelector((store) => store.auth);
   
   return (
-   <div className="min-h-[70vh] flex items-center justify-center bg-gray-50 p-6">
+   <div data-aos="fade-up" className="min-h-[70vh] flex items-center justify-center bg-gray-50 p-6">
   <div className="bg-white shadow-md rounded-xl p-10 max-w-lg w-full text-center">
     <img
       src="https://cdn-icons-png.flaticon.com/512/4076/4076549.png" // you can change this to your own empty icon

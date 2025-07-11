@@ -19,13 +19,12 @@ router.post("/create-checkout", isAuthenticated, async (req, res) => {
       return res.status(400).json({ message: "No products for checkout" });
     }
 
-    if (
-      !shippingaddress ||
-      !shippingaddress.city ||
-      !shippingaddress.address ||
-      !shippingaddress.postalcode ||
-      !shippingaddress.state
-    ) {
+    if (!shippingaddress) {
+      return res.status(400).json({ message: "Shipping address is missing" });
+    }
+
+    const { city, address, postalcode, state } = shippingaddress;
+    if (!city || !address || !postalcode || !state) {
       return res.status(400).json({ message: "Incomplete shipping address" });
     }
 
@@ -38,16 +37,16 @@ router.post("/create-checkout", isAuthenticated, async (req, res) => {
       paymentmethod,
     });
 
-    // Handle PhonePe payment
-    if (paymentmethod === "PhonePe") {
-      const redirectUrl = await initiatePhonePePayment(checkout._id, totalamount, userId);
-      return res.status(200).json({
-        checkout,
-        success: true,
-        paymentInitiated: true,
-        redirectUrl,
-      });
-    }
+    // // Handle PhonePe payment
+    // if (paymentmethod === "PhonePe") {
+    //   const redirectUrl = await initiatePhonePePayment(checkout._id, totalamount, userId);
+    //   return res.status(200).json({
+    //     checkout,
+    //     success: true,
+    //     paymentInitiated: true,
+    //     redirectUrl,
+    //   });
+    // }
 
     // For UPI/COD, no redirection needed
     return res.status(200).json({
@@ -70,7 +69,7 @@ router.put("/update-checkout/:id", isAuthenticated, async (req, res) => {
     const checkout = await checkoutmodel.findById(req.params.id);
     if (!checkout) return res.status(404).json({ error: "Checkout not found" });
 
-    if (paymentStatus === "paid") {
+    if (paymentStatus === "paid" || paymentStatus === "pay on delivery") {
       checkout.isPaid = true;
       checkout.paymentStatus = paymentStatus;
       checkout.paymentDetails = paymentDetails;
@@ -101,7 +100,8 @@ router.post("/final-checkout/:id", isAuthenticated, async (req, res) => {
         totalamount: checkout.totalamount,
         paymentmethod: checkout.paymentmethod,
         isPaid: true,
-        paymentStatus: "paid",
+        paymentStatus:
+          checkout.paymentmethod === "Cash on Delivery" ? "pay on delivery" : "paid",
         isDelivered: false,
         paidAt: checkout.paidAt,
         paymentDetails: checkout.paymentDetails,
@@ -111,7 +111,7 @@ router.post("/final-checkout/:id", isAuthenticated, async (req, res) => {
       checkout.finalizedAt = Date.now();
       await checkout.save();
 
-      await cartmodel.findOneAndDelete({ userId: checkout.userId });
+      // await cartmodel.findOneAndDelete({ userId: checkout.userId });
 
       return res.status(200).json({
         finalorder,

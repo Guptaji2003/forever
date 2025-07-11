@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { toast } from "react-toastify";
+import { toast } from "react-hot-toast";
 import axios from "axios";
 import { createProduct, fetchSingleProduct, updateProduct } from "../../redux/slice/productSlice";
 import { useParams } from "react-router-dom";
@@ -74,7 +74,7 @@ useEffect(() => {
 
 
   return (
-    <div className="max-w-4xl h-150 mx-auto p-8 mt-12 overflow-y-scroll bg-white rounded-3xl shadow-2xl">
+    <div data-aos="fade-up" className="max-w-4xl h-150 mx-auto p-8 mt-12 overflow-y-scroll bg-white rounded-3xl shadow-2xl">
       <h2 className="text-4xl font-bold mb-8 text-center text-gray-900">
         Add New Product
       </h2>
