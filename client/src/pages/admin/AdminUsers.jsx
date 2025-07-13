@@ -3,12 +3,15 @@ import { useDispatch, useSelector } from "react-redux";
 import { AdminUpdateUser } from "../../redux/slice/authSlice";
 
 const AdminUsers = () => {
-  const { alluser, loading } = useSelector((store) => store.auth);
+  const { user, alluser, loading } = useSelector((store) => store.auth);
   const { allOrders } = useSelector((store) => store.order);
   const dispatch = useDispatch();
-
+  const User = user;
   return (
-    <div data-aos="fade-up" className="min-h-screen bg-gray-100 px-4 md:px-8 py-6">
+    <div
+      data-aos="fade-up"
+      className="min-h-screen bg-gray-100 px-4 md:px-8 py-6"
+    >
       <h2 className="text-3xl font-bold text-gray-800 mb-6">👥 Users</h2>
 
       <div className="bg-white rounded-xl shadow-lg p-4 overflow-x-auto">
@@ -30,19 +33,21 @@ const AdminUsers = () => {
             <tbody>
               {alluser.map((user, index) => {
                 const userOrders = allOrders.filter(
-                  (order) => order.userId === user._id
+                  (order) => order?.userId?._id === user?._id
                 );
-                console.log('====================================');
+                console.log("====================================");
                 console.log(userOrders);
-                console.log('====================================');
+                console.log("====================================");
                 const totalSpent = userOrders.reduce(
-                  (sum, order) => sum + order.totalAmount,
+                  (sum, order) => sum + order.totalamount,
                   0
                 );
                 return (
                   <tr
                     key={index}
-                    className="border-t hover:bg-gray-50 transition text-center"
+                    className={`border-t hover:bg-gray-50 transition text-center ${
+                      user._id === User._id && "bg-blue-100"
+                    }`}
                   >
                     <td className="px-4 py-3 text-gray-700">
                       {user._id.slice(-6)}

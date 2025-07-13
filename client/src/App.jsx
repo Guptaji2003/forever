@@ -18,8 +18,8 @@ import UserWishlist from "./pages/user/UserWishlist";
 import UserHome from "./pages/user/UserHome";
 import Signup from "./pages/Signup";
 import AdminCreateProduct from "./pages/admin/AdminCreateProduct";
-import { useDispatch } from "react-redux";
-import { fetchAllProducts } from "./redux/slice/productSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchAllProducts, fetchNewArrivals } from "./redux/slice/productSlice";
 import { fetchAllOrders, fetchUserOrders } from "./redux/slice/orderSlice";
 import { AllUser } from "./redux/slice/authSlice";
 import { fetchUserCart } from "./redux/slice/cartSlice";
@@ -36,21 +36,22 @@ import "aos/dist/aos.css";
 const App = () => {
   useEffect(() => {
     AOS.init({
-      duration: 1000, 
-      once: true, 
+      duration: 1000,
+      once: true,
     });
   }, []);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
+  const { user } = useSelector((store) => store.auth);
   useEffect(() => {
     dispatch(fetchAllProducts());
     dispatch(fetchAllOrders());
     dispatch(fetchUserOrders());
     dispatch(AllUser());
     dispatch(fetchUserCart());
-  }, [dispatch, navigate]);
+    dispatch(fetchNewArrivals());
+  }, [dispatch, navigate, user]);
 
   return (
     <div>

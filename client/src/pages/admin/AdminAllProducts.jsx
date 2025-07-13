@@ -33,9 +33,9 @@ const AdminAllProducts = () => {
       {loading ? (
         <p className="text-gray-600 text-lg">Loading products...</p>
       ) : (
-        <div className="overflow-x-auto bg-white rounded-xl shadow-lg">
+        <div className="overflow-x-auto bg-white rounded-xl shadow-lg h-130 overflow-y-scroll">
           <table className="min-w-full table-auto border-collapse">
-            <thead className="bg-gray-100 text-gray-700">
+            <thead className="bg-gray-100 sticky top-0  text-gray-700">
               <tr>
                 <th className="p-4 border-b">Image</th>
                 <th className="p-4 border-b">Name</th>

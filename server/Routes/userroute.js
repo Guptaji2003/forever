@@ -126,7 +126,8 @@ router.put(
 router.get("/alluser", isAuthenticated, isAdmin, async (req, res) => {
   try {
     const users = await usermodel
-      .find({ _id: { $ne: req.user._id } })
+    .find()
+      // .find({ _id: { $ne: req.user._id } })
       .sort({ role: 1 });
     res.json({ success: true, message: "all users", users });
   } catch (error) {

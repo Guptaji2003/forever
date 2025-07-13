@@ -7,9 +7,9 @@ const NewArrival = () => {
   const dispatch = useDispatch();
   const { newArrivals } = useSelector((store) => store.product);
 
-  useEffect(() => {
-    dispatch(fetchNewArrivals());
-  }, [dispatch]);
+  // useEffect(() => {
+  //   dispatch(fetchNewArrivals());
+  // }, [dispatch]);
 
   return (
     <section data-aos="smooth" className="bg-white py-12 px-4 sm:px-6 lg:px-40">

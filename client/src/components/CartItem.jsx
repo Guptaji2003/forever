@@ -3,9 +3,9 @@ import { useNavigate } from "react-router-dom";
 import { removeCartItem, updateCart } from "../redux/slice/cartSlice";
 import { useDispatch } from "react-redux";
 
-const CartItem = ({product}) => {
-  const dispatch=useDispatch();
-    const navigate=useNavigate();
+const CartItem = ({ product }) => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   return (
     <div>
       <div
@@ -15,7 +15,7 @@ const CartItem = ({product}) => {
         {/* Product Info */}
         <div className="flex items-start md:items-center">
           <img
-          onClick={()=>navigate(`/product/${product?.productId}`)}
+            onClick={() => navigate(`/product/${product?.productId}`)}
             src={product?.image?.[0]?.url}
             alt="Product"
             className="w-24 h-24 object-cover rounded-md border"
@@ -50,14 +50,21 @@ const CartItem = ({product}) => {
           <div className="flex items-center bg-gray-200 rounded-md overflow-hidden">
             <button
               className="px-3 py-1 text-lg font-bold bg-gray-300 hover:bg-gray-400"
-              onClick={() =>
+              onClick={() => {
+                if (product.quantity === 1) {
+                  const confirmDelete = window.confirm(
+                    "Remove this product from cart?"
+                  );
+                  if (!confirmDelete) return;
+                }
+
                 dispatch(
                   updateCart({
                     productId: product.productId,
                     action: "decrement",
                   })
-                )
-              }
+                );
+              }}
             >
               −
             </button>
@@ -78,7 +85,15 @@ const CartItem = ({product}) => {
           </div>
           <button
             className="text-red-500 text-sm hover:underline"
-            onClick={() => dispatch(removeCartItem(product.productId))}
+            onClick={() => {
+              if (product.quantity === 1) {
+                const confirmDelete = window.confirm(
+                  "Remove this product from cart?"
+                );
+                if (!confirmDelete) return;
+              }
+              dispatch(removeCartItem(product.productId));
+            }}
           >
             Remove
           </button>

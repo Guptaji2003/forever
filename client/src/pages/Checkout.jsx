@@ -32,16 +32,16 @@ const Checkout = () => {
     setLoading(true);
     try {
       // 1. Create checkout
-       const result = await dispatch(
-      createCheckout({
-        products: cart.products,
-        shippingaddress: shipping,
-        totalamount: cart.totalcartamount + 10,
-        paymentmethod: paymentMethod,
-      })
-    );
+      const result = await dispatch(
+        createCheckout({
+          products: cart.products,
+          shippingaddress: shipping,
+          totalamount: cart.totalcartamount + 10,
+          paymentmethod: paymentMethod,
+        })
+      );
 
-    const checkoutInfo = result.payload;
+      const checkoutInfo = result.payload;
       // const data = checkoutInfo;
 
       // 2. If PhonePe, redirect to payment page
@@ -156,7 +156,14 @@ const Checkout = () => {
           </div>
 
           <button
-            onClick={handleCheckout}
+            onClick={() => {
+              const confirmDelete = window.confirm(
+                "Place Order?"
+              );
+              if (!confirmDelete) return;
+
+              handleCheckout();
+            }}
             className="w-full mt-6 bg-blue-600 text-white py-3 px-6 rounded hover:bg-blue-700"
           >
             {loading ? "Processing..." : "Place Order"}

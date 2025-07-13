@@ -17,7 +17,7 @@ const AdminDashboard = () => {
       {/* Adjusts for Navbar height */}
       {/* Sidebar */}
       <div
-        className={`fixed z-40 top-16 left-0 h-[calc(100vh-4rem)] bg-blue-900 text-white transition-all duration-300 
+        className={`fixed z-40 top-0 left-0 h-screen bg-blue-900 text-white transition-all duration-300 
         ${open ? "w-64" : "w-0"} overflow-hidden lg:w-64`}
       >
         <div className="flex flex-col h-full justify-between p-4">

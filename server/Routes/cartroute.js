@@ -97,7 +97,9 @@ router.put("/updatecart", isAuthenticated, async (req, res) => {
     } else if (action === "decrement") { 
       cart.products[index].quantity -= 1;
       if (cart.products[index].quantity <= 0) {
-        cart.products.splice(index, 1); // Remove product if quantity becomes 0
+        if(alert("Remove this product??")){
+          cart.products.splice(index, 1); // Remove product if quantity becomes 0
+        }
       }
     } else {
       return res
