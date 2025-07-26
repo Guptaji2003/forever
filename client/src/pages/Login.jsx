@@ -3,6 +3,7 @@ import { useDispatch } from "react-redux";
 import { useNavigate, Link } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import { loginUser } from "../redux/slice/authSlice";
+import confetti from "canvas-confetti";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -23,7 +24,12 @@ const Login = () => {
     try {
       const result = await dispatch(loginUser(input)).unwrap();
       toast.success("Login successful");
-      navigate("/");
+      confetti({
+        particleCount: 100,
+        spread: 70,
+        origin: { y: 0.6 },
+      });
+        navigate("/");
     } catch (err) {
       toast.error(err || "Login failed");
     } finally {
@@ -32,7 +38,10 @@ const Login = () => {
   };
 
   return (
-    <div data-aos="fade-up" className="flex items-center justify-center h-screen bg-gray-100">
+    <div
+      data-aos="fade-up"
+      className="flex items-center justify-center h-screen bg-gray-100"
+    >
       <div className="w-full max-w-md bg-white rounded-lg shadow-lg p-6">
         <h1 className="text-2xl font-bold text-gray-800 text-center mb-6">
           Login to Your Account
@@ -41,7 +50,10 @@ const Login = () => {
         <form onSubmit={postData}>
           {/* Email */}
           <div className="mb-4">
-            <label htmlFor="email" className="block text-gray-700 font-medium mb-2">
+            <label
+              htmlFor="email"
+              className="block text-gray-700 font-medium mb-2"
+            >
               Email Address
             </label>
             <input
@@ -58,7 +70,10 @@ const Login = () => {
 
           {/* Password */}
           <div className="mb-4">
-            <label htmlFor="password" className="block text-gray-700 font-medium mb-2">
+            <label
+              htmlFor="password"
+              className="block text-gray-700 font-medium mb-2"
+            >
               Password
             </label>
             <input
@@ -82,7 +97,10 @@ const Login = () => {
               />
               <span className="ml-2 text-sm text-gray-700">Remember Me</span>
             </label>
-            <Link to="/forgot-password" className="text-sm text-blue-600 hover:underline">
+            <Link
+              to="/forgot-password"
+              className="text-sm text-blue-600 hover:underline"
+            >
               Forgot Password?
             </Link>
           </div>

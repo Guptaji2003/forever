@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-hot-toast";
 import { registerUser } from "../redux/slice/authSlice";
+import confetti from 'canvas-confetti';
+
 
 const Signup = () => {
   const navigate = useNavigate();
@@ -19,19 +21,29 @@ const Signup = () => {
     setinput({ ...input, [e.target.name]: e.target.value });
   };
 
-  const postdata = async (e) => {
-    e.preventDefault();
-    setloading(true);
-    try {
-      dispatch(registerUser(input));
-      toast.success("signup successfully");
-      navigate("/");
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setloading(false);
-    }
-  };
+ const postdata = async (e) => {
+  e.preventDefault();
+  setloading(true);
+  try {
+    await dispatch(registerUser(input)); // Make sure to await this
+    toast.success("Signup successfully");
+
+    // 🎉 Trigger confetti
+    confetti({
+      particleCount: 100,
+      spread: 70,
+      origin: { y: 0.6 },
+    });
+
+    navigate("/");
+  } catch (error) {
+    console.log(error);
+    toast.error("Signup failed");
+  } finally {
+    setloading(false);
+  }
+};
+
   return (
     <div>
       <div data-aos="fade-up" class="flex items-center justify-center min-h-screen bg-gray-100">

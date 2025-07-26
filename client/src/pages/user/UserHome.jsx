@@ -2,6 +2,7 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { UpdateProfile } from "../../redux/slice/authSlice";
 import { toast } from 'react-hot-toast';
+import EditProfileModal from "../../components/EditProfileModal";
 const UserHome = () => {
   const { user } = useSelector((store) => store.auth);
   const { totalspent, userOrders } = useSelector((store) => store.order);
@@ -60,6 +61,7 @@ const UserHome = () => {
           className="mt-2 px-6 py-3 w-full bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 transition"
         >
           ✏️ Edit Profile
+          {/* <EditProfileModal/> */}
         </button>
       </div>
     </div>

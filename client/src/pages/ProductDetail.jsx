@@ -96,7 +96,7 @@ const ProductDetail = () => {
             )}
 
             {/* Size Selection */}
-            {singleProduct?.size?.length > 0 && (
+            {singleProduct?.size?.length > 0 && singleProduct?.size[0]!="" && (
               <div>
                 <h3 className="font-medium text-gray-800 mt-4">Select Size:</h3>
                 <div className="flex gap-3 mt-2">
